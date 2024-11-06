@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@trpc/client": "^10.33.0",
-    "@trpc/server": "^10.33.0",
+    "@trpc/client": "^10.45.2",
+    "@trpc/server": "^10.45.2",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028"
