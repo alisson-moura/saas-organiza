@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { TRPCModule } from 'nestjs-trpc';
 import { TrpcPanelController } from './trpc-panel.controller';
 import { AppContext } from './app.context';
+import { AuthMiddleware } from './auth.middleware';
 
 @Global()
 @Module({
@@ -15,6 +16,6 @@ import { AppContext } from './app.context';
     }),
   ],
   controllers: [TrpcPanelController],
-  providers: [AppContext],
+  providers: [AppContext, AuthMiddleware],
 })
 export class TrpcModule {}
