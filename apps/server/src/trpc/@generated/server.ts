@@ -6,12 +6,11 @@ const publicProcedure = t.procedure;
 
 const appRouter = t.router({
   account: t.router({
-    get: publicProcedure.output(z.object({
+    create: publicProcedure.input(z.object({
       name: z.string(),
-      email: z.string(),
-      id: z.string(),
-      avatarUrl: z.string(),
-    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+      email: z.string().email(),
+      password: z.string().min(6),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

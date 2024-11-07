@@ -1,22 +1,19 @@
-import { Router, Query } from 'nestjs-trpc';
-import { z } from 'zod';
-
-const accountSchema = z.object({
-  name: z.string(),
-  email: z.string(),
-  id: z.string(),
-  avatarUrl: z.string(),
-});
+import { Router, Mutation, Input } from 'nestjs-trpc';
+import { CreateAccountInput, createAccountSchema } from './dto/account-schemas';
+import { AccountsService } from './accounts.service';
+import { TRPCError } from '@trpc/server';
 
 @Router({ alias: 'account' })
 export class AccountsRouter {
-  @Query({ output: accountSchema })
-  async get(): Promise<z.infer<typeof accountSchema>> {
-    return {
-      id: '01',
-      name: 'Alisson Moura',
-      avatarUrl: 'https://api.dicebear.com/9.x/lorelei/svg',
-      email: 'alisson.mo.moura@outlook.com',
-    };
+  constructor(private accountService: AccountsService) {}
+
+  @Mutation({ input: createAccountSchema })
+  async create(@Input() input: CreateAccountInput) {
+    const result = await this.accountService.createAccount(input);
+    if (!result.success)
+      throw new TRPCError({
+        message: result.error,
+        code: 'BAD_REQUEST',
+      });
   }
 }

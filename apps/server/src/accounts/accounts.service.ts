@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { Result } from '@server/shared/result';
+import { PrismaService } from '@server/libs/prisma.service';
+import { HashService } from '@server/libs/hash.service';
+import { CreateAccountInput } from './dto/account-schemas';
 
 @Injectable()
 export class AccountsService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
-  }
+  constructor(
+    private database: PrismaService,
+    private hashService: HashService,
+  ) {}
 
-  findAll() {
-    return `This action returns all accounts`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
-  }
-
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async createAccount(
+    input: CreateAccountInput,
+  ): Promise<Result<{ id: number }>> {
+    const emailAlreadyInUse = await this.database.account.findFirst({
+      where: {
+        email: input.email,
+      },
+    });
+    if (emailAlreadyInUse != null) {
+      return {
+        success: false,
+        error: 'Email já está em uso.',
+      };
+    }
+    const hashedPassword = await this.hashService.hash(input.password);
+    const account = await this.database.account.create({
+      data: {
+        ...input,
+        password: hashedPassword,
+      },
+    });
+    return {
+      success: true,
+      data: {
+        id: account.id,
+      },
+    };
   }
 }
