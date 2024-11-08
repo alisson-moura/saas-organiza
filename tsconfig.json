@@ -13,8 +13,11 @@
     "strict": true,
     "sourceMap": true,
     "paths": {
+      "@app/*": ["./apps/app/src/*"],
       "@web/*": ["./apps/web/src/*"],
       "@server/*": ["./apps/server/src/*"]
     }
   }
 }
+
+
