@@ -12,7 +12,7 @@ export const trpcClient = trpc.createClient({
       fetch(url, opts) {
         return fetch(url, {
           ...opts,
-          credentials: "include"
+          credentials: "include",
         })
       },
     }),

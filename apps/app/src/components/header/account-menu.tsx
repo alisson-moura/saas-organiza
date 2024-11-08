@@ -1,15 +1,18 @@
-import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { useNavigate } from "react-router-dom";
+import { ChevronDown, LogOut, UserRound } from "lucide-react";
+import { trpc } from "@app/lib/trpc";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { LogOut, UserRound } from "lucide-react";
-import { trpc } from "@app/lib/trpc";
-import { useNavigate } from "react-router-dom";
+import { Skeleton } from "../ui/skeleton"
+
+
 
 export function AccountMenu() {
   const navigate = useNavigate();
@@ -18,6 +21,17 @@ export function AccountMenu() {
       navigate("/sign-in");
     },
   });
+  const { data, isLoading } = trpc.account.me.useQuery();
+
+  function getFirstAndLastName(fullName: string) {
+    const names = fullName.trim().split(' ');
+    if (names.length === 1) {
+      return names[0]; // Caso o nome tenha apenas uma palavra
+    }
+    const firstName = names[0];
+    const lastName = names[names.length - 1];
+    return `${firstName} ${lastName}`;
+  }
 
   return (
     <DropdownMenu>
@@ -25,17 +39,17 @@ export function AccountMenu() {
         <Button
           variant="outline"
           className="flex select-none items-center gap-2"
+          disabled={isLoading}
         >
-          Alisson Moura
+          {isLoading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> :data?.account && getFirstAndLastName(data.account.name)}
+          <ChevronDown className="w-4 h-4"/>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="p-2">
         <DropdownMenuLabel className="flex flex-col">
-          <span className="text-sm font-semibold">
-            Alisson Matheus de Oliveira Moura
-          </span>
+          <span className="text-sm font-semibold">{data?.account.name}</span>
           <span className="text-xs font-normal text-muted-foreground">
-            alisson.mo.moura@outlook.com.br
+            {data?.account.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="my-2" />
