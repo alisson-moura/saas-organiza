@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import { AccountsRouter } from './accounts.router';
+import { AccountsRouter } from './routers/accounts.router';
+import { AuthRouter } from './routers/auth.router';
 
 @Module({
-  providers: [AccountsService, AccountsRouter],
+  providers: [AccountsService, AccountsRouter, AuthRouter],
 })
 export class AccountsModule {}

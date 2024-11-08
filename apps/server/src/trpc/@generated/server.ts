@@ -11,10 +11,6 @@ const appRouter = t.router({
       email: z.string().email(),
       password: z.string().min(6),
     })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    auth: publicProcedure.input(z.object({
-      email: z.string().email(),
-      password: z.string().min(6).max(20),
-    })).output(z.object({ token: z.string() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     me: publicProcedure.output(z.object({
       account: z.object({
         id: z.number(),
@@ -26,6 +22,13 @@ const appRouter = t.router({
         avatarUrl: z.string().url().nullable(),
       })
     })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  auth: t.router({
+    login: publicProcedure.input(z.object({
+      email: z.string().email(),
+      password: z.string().min(6).max(20),
+    })).output(z.object({ token: z.string() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

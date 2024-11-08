@@ -6,22 +6,42 @@ import { ContextOptions, TRPCContext } from 'nestjs-trpc';
 export class AppContext implements TRPCContext {
   constructor(private jwtService: JwtService) {}
   create(opts: ContextOptions) {
-    const accountId = this.getAccountFromHeader(opts.req.headers);
-    return {
+    const { req, res } = opts;
+    const notAuthenticated = {
+      req,
+      res,
       auth: {
-        id: accountId,
+        id: null,
       },
     };
-  }
+    let access_token = '';
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      access_token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies?.access_token) {
+      access_token = req.cookies.access_token as string;
+    }
 
-  private getAccountFromHeader(headers: Record<string, string>) {
+    if (!access_token) {
+      return notAuthenticated;
+    }
+
     try {
-      const jwtPayload = this.jwtService.verifyToken(
-        headers.authorization.split(' ')[1],
-      );
-      return jwtPayload.sub as string;
+      const payload = this.jwtService.verifyToken(access_token);
+      if (!payload.sub) {
+        return notAuthenticated;
+      }
+      return {
+        req,
+        res,
+        auth: {
+          id: payload.sub as string,
+        },
+      };
     } catch (error) {
-      return null;
+      return notAuthenticated;
     }
   }
 }
