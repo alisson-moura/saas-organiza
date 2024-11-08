@@ -38,6 +38,10 @@ export class AuthRouter {
       const token = this.jwtService.generateToken(result.data.id.toString());
 
       ctx.res.cookie('access_token', token, accessTokenCookieOptions);
+      ctx.res.cookie('logged_in', true, {
+        ...accessTokenCookieOptions,
+        httpOnly: false,
+      });
 
       return {
         token,
@@ -53,5 +57,8 @@ export class AuthRouter {
   @Mutation()
   async logout(@Ctx() ctx: Context) {
     ctx.res.cookie('access_token', '', -1);
+    ctx.res.cookie('logged_in', '', {
+      maxAge: -1,
+    });
   }
 }
