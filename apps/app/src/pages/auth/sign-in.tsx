@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@app/components/ui/button";
 import {
   Form,
@@ -26,21 +26,22 @@ const authFormSchema = z.object({
 });
 
 export function SignInPage() {
-  const { mutateAsync: authenticate } = trpc.account.auth.useMutation();
-  const [searchParams] = useSearchParams()
+  const { mutateAsync: authenticate } = trpc.auth.login.useMutation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const form = useForm<z.infer<typeof authFormSchema>>({
     resolver: zodResolver(authFormSchema),
     defaultValues: {
-      email: searchParams.get('email') ?? "",
+      email: searchParams.get("email") ?? "",
       password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof authFormSchema>) {
     try {
-      const { token } = await authenticate(values);
-      console.log(token);
+      await authenticate(values);
+      navigate("/");
     } catch (error) {
       let message = "Aconteceu um erro inesperado.";
       if (error instanceof TRPCClientError) {

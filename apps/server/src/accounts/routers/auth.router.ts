@@ -56,9 +56,7 @@ export class AuthRouter {
 
   @Mutation()
   async logout(@Ctx() ctx: Context) {
-    ctx.res.cookie('access_token', '', -1);
-    ctx.res.cookie('logged_in', '', {
-      maxAge: -1,
-    });
+    ctx.res.cookie('access_token', '', { maxAge: -1 });
+    ctx.res.cookie('logged_in', '', { maxAge: -1 });
   }
 }
