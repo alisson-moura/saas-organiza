@@ -10,9 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Skeleton } from "../ui/skeleton"
-
-
+import { Skeleton } from "../ui/skeleton";
+import { DialogProfile } from "./profile";
+import { Dialog, DialogTrigger } from "../ui/dialog";
 
 export function AccountMenu() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export function AccountMenu() {
   const { data, isLoading } = trpc.account.me.useQuery();
 
   function getFirstAndLastName(fullName: string) {
-    const names = fullName.trim().split(' ');
+    const names = fullName.trim().split(" ");
     if (names.length === 1) {
       return names[0]; // Caso o nome tenha apenas uma palavra
     }
@@ -34,37 +34,54 @@ export function AccountMenu() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex select-none items-center gap-2"
-          disabled={isLoading}
-        >
-          {isLoading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> :data?.account && getFirstAndLastName(data.account.name)}
-          <ChevronDown className="w-4 h-4"/>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="p-2">
-        <DropdownMenuLabel className="flex flex-col">
-          <span className="text-sm font-semibold">{data?.account.name}</span>
-          <span className="text-xs font-normal text-muted-foreground">
-            {data?.account.email}
-          </span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator className="my-2" />
-        <DropdownMenuItem>
-          <span>Perfil</span>
-          <UserRound className="ml-auto w-4 h-4" />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => logout()}
-          className="text-rose-500 dark:text-rose-400"
-        >
-          <span>Sair</span>
-          <LogOut className="ml-auto w-4 h-4" />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Dialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="flex select-none items-center gap-2"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Skeleton className="w-[100px] h-[20px] rounded-full" />
+            ) : (
+              data?.account && getFirstAndLastName(data.account.name)
+            )}
+            <ChevronDown className="w-4 h-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="p-2">
+          <DropdownMenuLabel className="flex flex-col">
+            <span className="text-sm font-semibold">{data?.account.name}</span>
+            <span className="text-xs font-normal text-muted-foreground">
+              {data?.account.email}
+            </span>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator className="my-2" />
+          <DialogTrigger asChild>
+            <DropdownMenuItem>
+              <span>Perfil</span>
+              <UserRound className="ml-auto w-4 h-4" />
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DropdownMenuItem
+            onClick={() => logout()}
+            className="text-rose-500 dark:text-rose-400"
+          >
+            <span>Sair</span>
+            <LogOut className="ml-auto w-4 h-4" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {data?.account && (
+        <DialogProfile
+          user={{
+            id: data.account.id,
+            email: data.account.email,
+            name: data.account.name,
+          }}
+        />
+      )}
+    </Dialog>
   );
 }

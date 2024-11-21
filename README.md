@@ -27,9 +27,10 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 3. **Recuperação de Senha**  
    **Como um** usuário, **eu quero** solicitar um e-mail para redefinir minha senha **para que** eu possa recuperar o acesso à minha conta.  
    **Status:** 🟥 **Pendente**
+
 4. **Alteração de Perfil**
    **Como um** usuário, **eu quero** editar minhas informações pessoais, como nome, e-mail ou senha, para que meu perfil esteja atualizado.
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟨 **Desenvolvendo**
 
 ---
 
