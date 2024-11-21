@@ -38,7 +38,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 5. **Criação de Grupo**  
    **Como um** usuário, **eu quero** criar um grupo com nome e descrição **para que** eu possa compartilhar listas com outras pessoas.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟨 **Desenvolvendo**
 
 6. **Visualizar Grupos**  
    **Como um** membro de um grupo, **eu quero** ver os detalhes do grupo, incluindo membros e listas, **para que** eu possa acompanhar suas atividades.  
