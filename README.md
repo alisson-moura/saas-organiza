@@ -18,29 +18,32 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 1. **Cadastro de Usuário**  
    **Como um** novo usuário, **eu quero** criar uma conta com e-mail e senha **para que** eu possa acessar o sistema.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟩 **Concluído**
 
 2. **Login no Sistema**  
    **Como um** usuário cadastrado, **eu quero** fazer login com meu e-mail e senha **para que** eu possa acessar minhas listas e grupos.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟩 **Concluído**
 
 3. **Recuperação de Senha**  
    **Como um** usuário, **eu quero** solicitar um e-mail para redefinir minha senha **para que** eu possa recuperar o acesso à minha conta.  
+   **Status:** 🟥 **Pendente**
+4. **Alteração de Perfil**
+   **Como um** usuário, **eu quero** editar minhas informações pessoais, como nome, e-mail ou senha, para que meu perfil esteja atualizado.
    **Status:** 🟥 **Pendente**
 
 ---
 
 ### Funcionalidades de Grupos
 
-4. **Criação de Grupo**  
+5. **Criação de Grupo**  
    **Como um** usuário, **eu quero** criar um grupo com nome e descrição **para que** eu possa compartilhar listas com outras pessoas.  
    **Status:** 🟥 **Pendente**
 
-5. **Visualizar Grupos**  
+6. **Visualizar Grupos**  
    **Como um** membro de um grupo, **eu quero** ver os detalhes do grupo, incluindo membros e listas, **para que** eu possa acompanhar suas atividades.  
    **Status:** 🟥 **Pendente**
 
-6. **Editar Grupos**  
+7. **Editar Grupos**  
    **Como um** Líder ou Organizador, **eu quero** editar as informações do grupo, como nome e descrição, **para que** elas reflitam as necessidades do grupo.  
    **Status:** 🟥 **Pendente**
 
@@ -48,15 +51,15 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 ### Funcionalidades de Membros
 
-7. **Convidar Membros**  
+8. **Convidar Membros**  
    **Como um** Líder ou Organizador, **eu quero** enviar convites para que outras pessoas participem do grupo **para que** possam colaborar nas listas.  
    **Status:** 🟥 **Pendente**
 
-8. **Cancelar Convites**  
+9. **Cancelar Convites**  
    **Como um** Líder, **eu quero** cancelar convites enviados **para que** convites incorretos sejam anulados.  
    **Status:** 🟥 **Pendente**
 
-9. **Gerenciar Membros**  
+10. **Gerenciar Membros**  
    **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  
    **Status:** 🟥 **Pendente**
 
@@ -64,19 +67,19 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 ### Funcionalidades de Listas
 
-10. **Criar Lista**  
+11. **Criar Lista**  
     **Como um** Líder ou Organizador, **eu quero** criar uma lista com nome e descrição **para que** o grupo possa organizar tarefas, compras ou outras atividades.  
     **Status:** 🟥 **Pendente**
 
-11. **Adicionar Itens à Lista**  
+12. **Adicionar Itens à Lista**  
     **Como um** Líder ou Organizador, **eu quero** adicionar itens à lista **para que** os membros saibam as tarefas, itens ou atividades a serem realizadas.  
     **Status:** 🟥 **Pendente**
 
-12. **Marcar Itens como Concluídos**  
+13. **Marcar Itens como Concluídos**  
     **Como um** Participante ou superior, **eu quero** marcar itens da lista como concluídos **para que** o grupo saiba o que já foi feito.  
     **Status:** 🟥 **Pendente**
 
-13. **Finalizar Lista**  
+14. **Finalizar Lista**  
     **Como um** Líder ou Organizador, **eu quero** finalizar uma lista **para que** ela seja arquivada quando todas as atividades estiverem concluídas.  
     **Status:** 🟥 **Pendente**
 
@@ -84,11 +87,11 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 ### Funcionalidades Adicionais
 
-14. **Notificações**  
+15. **Notificações**  
     **Como um** membro de um grupo, **eu quero** receber notificações sobre eventos importantes, como convites ou listas finalizadas **para que** eu esteja sempre atualizado.  
     **Status:** 🟥 **Pendente**
 
-15. **Gerenciamento de Perfil**  
+16. **Gerenciamento de Perfil**  
     **Como um** usuário, **eu quero** atualizar minhas informações pessoais no perfil **para que** meus dados estejam corretos e atualizados.  
     **Status:** 🟥 **Pendente**
 
