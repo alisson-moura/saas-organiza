@@ -10,6 +10,8 @@ import {
   accountSchema,
   CreateAccountInput,
   createAccountSchema,
+  updataAccountSchema,
+  UpdateAccountInput,
 } from '../dto/account-schemas';
 import { AccountsService } from '../accounts.service';
 import { TRPCError } from '@trpc/server';
@@ -51,5 +53,17 @@ export class AccountsRouter {
       code: 'BAD_REQUEST',
       message: result.error,
     });
+  }
+
+  @UseMiddlewares(AuthMiddleware)
+  @Mutation({ input: updataAccountSchema })
+  async update(@Input() input: UpdateAccountInput) {
+    const result = await this.accountService.updateAccount(input);
+    if (!result.success) {
+      throw new TRPCError({
+        message: result.error,
+        code: 'BAD_REQUEST',
+      });
+    }
   }
 }

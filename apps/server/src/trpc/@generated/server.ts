@@ -21,7 +21,18 @@ const appRouter = t.router({
         updatedAt: z.date(),
         avatarUrl: z.string().url().nullable(),
       })
-    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    update: publicProcedure.input(z.object({
+      id: z.number(),
+      name: z.string(),
+      email: z.string().email(),
+      password: z
+        .string()
+        .min(6, { message: 'A senha precisa ter pelo menos 6 caracteres.' })
+        .max(20, { message: 'A senha pode ter no máximo 20 caracteres.' })
+        .optional()
+        .or(z.literal('')),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
   auth: t.router({
     login: publicProcedure.input(z.object({

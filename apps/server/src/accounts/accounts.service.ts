@@ -6,6 +6,7 @@ import {
   Account,
   AuthenticationInput,
   CreateAccountInput,
+  UpdateAccountInput,
 } from './dto/account-schemas';
 
 @Injectable()
@@ -108,6 +109,58 @@ export class AccountsService {
       data: {
         account,
       },
+    };
+  }
+
+  async updateAccount(input: UpdateAccountInput): Promise<Result<void>> {
+    const { success, error } = await this.getAccount(input.id);
+    if (!success) {
+      return {
+        error,
+        success,
+      };
+    }
+
+    const emailAlreadyInUse = await this.database.account.findFirst({
+      where: {
+        email: input.email,
+        id: {
+          not: {
+            equals: input.id,
+          },
+        },
+      },
+    });
+    if (emailAlreadyInUse != null) {
+      return {
+        success: false,
+        error: 'Email já está em uso.',
+      };
+    }
+
+    await this.database.account.update({
+      data: {
+        email: input.email,
+        name: input.name,
+      },
+      where: {
+        id: input.id,
+      },
+    });
+
+    if (input.password) {
+      await this.database.account.update({
+        data: {
+          password: await this.hashService.hash(input.password),
+        },
+        where: {
+          id: input.id,
+        },
+      });
+    }
+
+    return {
+      success: true,
     };
   }
 }

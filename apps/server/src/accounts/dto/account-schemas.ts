@@ -23,3 +23,16 @@ export const accountSchema = z.object({
   avatarUrl: z.string().url().nullable(),
 });
 export type Account = z.infer<typeof accountSchema>;
+
+export const updataAccountSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(6, { message: 'A senha precisa ter pelo menos 6 caracteres.' })
+    .max(20, { message: 'A senha pode ter no máximo 20 caracteres.' })
+    .optional()
+    .or(z.literal('')),
+});
+export type UpdateAccountInput = z.infer<typeof updataAccountSchema>;
