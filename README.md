@@ -30,7 +30,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 4. **Alteração de Perfil**
    **Como um** usuário, **eu quero** editar minhas informações pessoais, como nome, e-mail ou senha, para que meu perfil esteja atualizado.
-   **Status:** 🟨 **Desenvolvendo**
+   **Status:** 🟩 **Concluído**
 
 ---
 

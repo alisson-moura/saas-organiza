@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   DialogContent,
@@ -19,6 +20,8 @@ import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { trpc } from "@app/lib/trpc";
+import { TRPCClientError } from "@trpc/client";
 
 const updateProfileFormSchema = z.object({
   name: z
@@ -34,20 +37,38 @@ const updateProfileFormSchema = z.object({
     .or(z.literal("")),
 });
 
-export function DialogProfile(props: {
-  user: { id: number; name: string; email: string };
-}) {
+export function DialogProfile(props: { closeDialog: VoidFunction }) {
+  const utils = trpc.useUtils();
+  const { data } = trpc.account.me.useQuery();
+  const { mutateAsync: updateAccount } = trpc.account.update.useMutation();
+
   const form = useForm<z.infer<typeof updateProfileFormSchema>>({
     resolver: zodResolver(updateProfileFormSchema),
     defaultValues: {
-      email: props.user.email,
+      email: data?.account.email,
       password: "",
-      name: props.user.name,
+      name: data?.account.name,
     },
   });
 
   async function onSubmit(values: z.infer<typeof updateProfileFormSchema>) {
-    // TODO: CALL TRPC API
+    try {
+      await updateAccount({
+        id: data?.account.id!,
+        ...values,
+      });
+      await utils.account.invalidate();
+      props.closeDialog();
+    } catch (error) {
+      console.log(error);
+      let message = "Aconteceu um erro inesperado.";
+      if (error instanceof TRPCClientError) {
+        message = error.message;
+      }
+      toast.error("Não conseguimos atualizar seu perfil.", {
+        description: message,
+      });
+    }
   }
 
   return (

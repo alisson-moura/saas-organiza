@@ -13,8 +13,11 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { DialogProfile } from "./profile";
 import { Dialog, DialogTrigger } from "../ui/dialog";
+import { useState } from "react";
 
 export function AccountMenu() {
+  const [profileDialogIsOpen, setProfileDialogIsOpen] = useState(false)
+
   const navigate = useNavigate();
   const { mutate: logout } = trpc.auth.logout.useMutation({
     onSuccess: () => {
@@ -34,7 +37,7 @@ export function AccountMenu() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={profileDialogIsOpen} onOpenChange={setProfileDialogIsOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -75,11 +78,7 @@ export function AccountMenu() {
       </DropdownMenu>
       {data?.account && (
         <DialogProfile
-          user={{
-            id: data.account.id,
-            email: data.account.email,
-            name: data.account.name,
-          }}
+          closeDialog={() => setProfileDialogIsOpen(false)}
         />
       )}
     </Dialog>
