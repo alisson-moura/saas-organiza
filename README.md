@@ -38,11 +38,11 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 5. **Criação de Grupo**  
    **Como um** usuário, **eu quero** criar um grupo com nome e descrição **para que** eu possa compartilhar listas com outras pessoas.  
-   **Status:** 🟨 **Desenvolvendo**
+   **Status:** 🟩 **Concluído**
 
 6. **Visualizar Grupos**  
    **Como um** membro de um grupo, **eu quero** ver os detalhes do grupo, incluindo membros e listas, **para que** eu possa acompanhar suas atividades.  
-   **Status:** 🟥 **Pendente**
+   🟨 **Desenvolvendo**
 
 7. **Editar Grupos**  
    **Como um** Líder ou Organizador, **eu quero** editar as informações do grupo, como nome e descrição, **para que** elas reflitam as necessidades do grupo.  
