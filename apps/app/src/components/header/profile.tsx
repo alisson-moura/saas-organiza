@@ -60,7 +60,6 @@ export function DialogProfile(props: { closeDialog: VoidFunction }) {
       await utils.account.invalidate();
       props.closeDialog();
     } catch (error) {
-      console.log(error);
       let message = "Aconteceu um erro inesperado.";
       if (error instanceof TRPCClientError) {
         message = error.message;

@@ -43,7 +43,6 @@ export class AccountsRouter {
   @Query({ output: z.object({ account: accountSchema }) })
   async me(@Ctx() ctx: Context) {
     const result = await this.accountService.getAccount(parseInt(ctx.auth.id!));
-    console.log(result);
     if (result.success) {
       return {
         account: result.data?.account,
