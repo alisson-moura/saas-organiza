@@ -1,4 +1,5 @@
 import { All, Controller, Inject, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppRouterHost } from 'nestjs-trpc';
 import { renderTrpcPanel } from 'trpc-panel';
 
@@ -8,6 +9,7 @@ export class TrpcPanelController implements OnModuleInit {
 
   constructor(
     @Inject(AppRouterHost) private readonly appRouterHost: AppRouterHost,
+    private configService: ConfigService,
   ) {}
   onModuleInit() {
     this.appRouter = this.appRouterHost.appRouter;
@@ -16,7 +18,7 @@ export class TrpcPanelController implements OnModuleInit {
   @All('/panel')
   panel(): string {
     return renderTrpcPanel(this.appRouter, {
-      url: 'https://api-organiza-fr6u.onrender.com/trpc',
+      url: this.configService.getOrThrow('API_URL') + '/trpc',
     });
   }
 }

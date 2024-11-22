@@ -12,6 +12,8 @@ export const envSchema = z.object({
   DATABASE_URL: z
     .string()
     .url({ message: 'DATABASE_URL deve ser uma URL válida' }),
+  APP_URL: z.string().url(),
+  API_URL: z.string().url(),
 });
 
 export type EnvVariables = z.infer<typeof envSchema>;
