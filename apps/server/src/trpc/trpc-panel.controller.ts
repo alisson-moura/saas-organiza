@@ -16,7 +16,7 @@ export class TrpcPanelController implements OnModuleInit {
   @All('/panel')
   panel(): string {
     return renderTrpcPanel(this.appRouter, {
-      url: 'http://localhost:4000/trpc',
+      url: 'https://api-organiza-fr6u.onrender.com/trpc',
     });
   }
 }
