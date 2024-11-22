@@ -27,7 +27,10 @@ export class AuthRouter {
     const cookieOptions: CookieOptions = {
       httpOnly: true,
       secure: this.configService.getOrThrow('NODE_ENV') === 'production',
-      sameSite: 'none',
+      sameSite:
+        this.configService.getOrThrow('NODE_ENV') === 'production'
+          ? 'none'
+          : 'lax',
     };
     const accessTokenCookieOptions = {
       ...cookieOptions,

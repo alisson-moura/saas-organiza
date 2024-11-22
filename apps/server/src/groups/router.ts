@@ -38,6 +38,7 @@ export class GroupsRouter {
     });
   }
 
+  @UseMiddlewares(AuthMiddleware)
   @Query({
     output: z.object({
       groups: z.array(
