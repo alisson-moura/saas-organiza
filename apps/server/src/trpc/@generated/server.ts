@@ -40,6 +40,20 @@ const appRouter = t.router({
       password: z.string().min(6).max(20),
     })).output(z.object({ token: z.string() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  groups: t.router({
+    create: publicProcedure.input(z.object({
+      name: z
+        .string()
+        .min(8, { message: 'O nome precisa ter pelo menos 2 caracteres.' })
+        .max(140, { message: 'O nome pode ter no máximo 140 caracteres.' }),
+      description: z
+        .string({ message: 'A descrição do grupo é obrigatória.' })
+        .min(20, {
+          message: 'A descrição do grupo precisa ter ao menos 20 caracteres.',
+        })
+        .max(140, { message: 'A descrição pode ter no máximo 140 caracteres.' }),
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

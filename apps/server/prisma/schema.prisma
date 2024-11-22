@@ -16,6 +16,25 @@ model Account {
   avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  group     Group[]
 
   @@map("accounts")
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  status      Status   @default(ACTIVE)
+  ownerId     Int      @map("owner_id")
+  createdAt   DateTime @default(now())
+
+  owner Account @relation(fields: [ownerId], references: [id])
+
+  @@map("groups")
 }
