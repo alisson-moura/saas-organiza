@@ -39,6 +39,7 @@ const createGroupFormSchema = z.object({
 });
 
 export function DialogGroup(props: { closeDialog: VoidFunction }) {
+  const utils = trpc.useUtils();
   const { mutateAsync: createGroup } = trpc.groups.create.useMutation();
   const form = useForm<z.infer<typeof createGroupFormSchema>>({
     resolver: zodResolver(createGroupFormSchema),
@@ -52,6 +53,7 @@ export function DialogGroup(props: { closeDialog: VoidFunction }) {
     try {
       await createGroup(values)
       toast.success("Grupo criado com sucesso.")
+      await utils.groups.invalidate()
       props.closeDialog();
     } catch (error) {
       let message = "Aconteceu um erro inesperado.";

@@ -42,7 +42,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 6. **Visualizar Grupos**  
    **Como um** membro de um grupo, **eu quero** ver os detalhes do grupo, incluindo membros e listas, **para que** eu possa acompanhar suas atividades.  
-   🟨 **Desenvolvendo**
+   **Status:** 🟩 **Concluído**
 
 7. **Editar Grupos**  
    **Como um** Líder ou Organizador, **eu quero** editar as informações do grupo, como nome e descrição, **para que** elas reflitam as necessidades do grupo.  
