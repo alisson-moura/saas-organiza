@@ -13,6 +13,11 @@ export const trpcClient = trpc.createClient({
         return fetch(url, {
           ...opts,
           credentials: "include",
+        }).then(async response => {
+          if(response.status === 401) {
+            window.location.href = '/sign-in';
+          }
+          return response
         })
       },
     }),

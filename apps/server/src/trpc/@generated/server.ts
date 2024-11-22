@@ -39,6 +39,7 @@ const appRouter = t.router({
       email: z.string().email(),
       password: z.string().min(6).max(20),
     })).output(z.object({ token: z.string() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    check: publicProcedure.output(z.object({ isAuthenticated: z.boolean() })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
   groups: t.router({

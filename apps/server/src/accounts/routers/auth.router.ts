@@ -1,4 +1,11 @@
-import { Router, Mutation, Input, Ctx } from 'nestjs-trpc';
+import {
+  Router,
+  Mutation,
+  Input,
+  Ctx,
+  Query,
+  UseMiddlewares,
+} from 'nestjs-trpc';
 import { ConfigService } from '@nestjs/config';
 import {
   AuthenticationInput,
@@ -10,6 +17,7 @@ import { z } from 'zod';
 import { JwtService } from '@server/libs/jwt.service';
 import { Context } from '@server/trpc/app.context';
 import { CookieOptions } from 'express';
+import { AuthMiddleware } from '@server/trpc/auth.middleware';
 
 @Router({ alias: 'auth' })
 export class AuthRouter {
@@ -41,12 +49,7 @@ export class AuthRouter {
 
     if (result.success && result.data) {
       const token = this.jwtService.generateToken(result.data.id.toString());
-
       ctx.res.cookie('access_token', token, accessTokenCookieOptions);
-      ctx.res.cookie('logged_in', true, {
-        ...accessTokenCookieOptions,
-        httpOnly: false,
-      });
 
       return {
         token,
@@ -54,14 +57,21 @@ export class AuthRouter {
     }
 
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
+      code: 'BAD_REQUEST',
       message: result.error,
     });
+  }
+
+  @UseMiddlewares(AuthMiddleware)
+  @Query({ output: z.object({ isAuthenticated: z.boolean() }) })
+  check(@Ctx() ctx: Context) {
+    return {
+      isAuthenticated: !!ctx.auth.id,
+    };
   }
 
   @Mutation()
   async logout(@Ctx() ctx: Context) {
     ctx.res.cookie('access_token', '', { maxAge: -1 });
-    ctx.res.cookie('logged_in', '', { maxAge: -1 });
   }
 }
