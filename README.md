@@ -92,10 +92,9 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
     **Como um** membro de um grupo, **eu quero** receber notificações sobre eventos importantes, como convites ou listas finalizadas **para que** eu esteja sempre atualizado.  
     **Status:** 🟥 **Pendente**
 
-16. **Gerenciamento de Perfil**  
-    **Como um** usuário, **eu quero** atualizar minhas informações pessoais no perfil **para que** meus dados estejam corretos e atualizados.  
+16. **Health check**  
+    Criar um endpoint health para  monitorar a api do app
     **Status:** 🟥 **Pendente**
-
 ---
 
 ## Permissões por Papel
