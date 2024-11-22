@@ -17,9 +17,10 @@ const groups: any[] = [];
 
 export function Menu() {
   const [selectedAccount, setSelectedAccount] = useState("personal");
+  const [groupDialogIsOpen, setGroupDialogIsOpen] = useState(false)
 
   return (
-    <Dialog>
+    <Dialog open={groupDialogIsOpen} onOpenChange={setGroupDialogIsOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -76,7 +77,7 @@ export function Menu() {
           </DialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogGroup />
+      <DialogGroup closeDialog={() => setGroupDialogIsOpen(false)} />
     </Dialog>
   );
 }

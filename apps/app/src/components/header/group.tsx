@@ -23,8 +23,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { TRPCClientError } from "@trpc/client";
+import { trpc } from "@app/lib/trpc";
 
-const updateProfileFormSchema = z.object({
+const createGroupFormSchema = z.object({
   name: z
     .string()
     .min(8, { message: "O nome precisa ter pelo menos 2 caracteres." })
@@ -37,20 +38,22 @@ const updateProfileFormSchema = z.object({
     .max(140, { message: "A descrição pode ter no máximo 140 caracteres." }),
 });
 
-export function DialogGroup() {
-  const form = useForm<z.infer<typeof updateProfileFormSchema>>({
-    resolver: zodResolver(updateProfileFormSchema),
+export function DialogGroup(props: { closeDialog: VoidFunction }) {
+  const { mutateAsync: createGroup } = trpc.groups.create.useMutation();
+  const form = useForm<z.infer<typeof createGroupFormSchema>>({
+    resolver: zodResolver(createGroupFormSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof updateProfileFormSchema>) {
+  async function onSubmit(values: z.infer<typeof createGroupFormSchema>) {
     try {
-      console.log(values);
+      await createGroup(values)
+      toast.success("Grupo criado com sucesso.")
+      props.closeDialog();
     } catch (error) {
-      console.log(error);
       let message = "Aconteceu um erro inesperado.";
       if (error instanceof TRPCClientError) {
         message = error.message;
