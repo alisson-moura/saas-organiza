@@ -1,4 +1,5 @@
 import { Router, Mutation, Input, Ctx } from 'nestjs-trpc';
+import { ConfigService } from '@nestjs/config';
 import {
   AuthenticationInput,
   authenticationSchema,
@@ -10,21 +11,12 @@ import { JwtService } from '@server/libs/jwt.service';
 import { Context } from '@server/trpc/app.context';
 import { CookieOptions } from 'express';
 
-const cookieOptions: CookieOptions = {
-  httpOnly: true,
-  secure: false,
-  sameSite: 'lax',
-};
-const accessTokenCookieOptions = {
-  ...cookieOptions,
-  expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-};
-
 @Router({ alias: 'auth' })
 export class AuthRouter {
   constructor(
     private accountService: AccountsService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   @Mutation({
@@ -32,6 +24,16 @@ export class AuthRouter {
     output: z.object({ token: z.string() }),
   })
   async login(@Input() input: AuthenticationInput, @Ctx() ctx: Context) {
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+    };
+    const accessTokenCookieOptions = {
+      ...cookieOptions,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    };
+
     const result = await this.accountService.checkCrendetials(input);
 
     if (result.success && result.data) {
