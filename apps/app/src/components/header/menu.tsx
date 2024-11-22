@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronsUpDown, CirclePlus, User, Users } from "lucide-react";
+import { Check, ChevronsUpDown, CirclePlus, User, Users } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +13,16 @@ import { Button } from "../ui/button";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import { DialogGroup } from "./group";
 
-const groups: any[] = [];
+const groups: any[] = [
+  { id: 1, name: "Aleatórios", role: "Líder" },
+  { id: 2, name: "Aleatórios adsadsadss adsdsa", role: "Organizador" },
+  { id: 3, name: "Aleatórios", role: "Participante" },
+  { id: 4, name: "Aleatórios", role: "Observador" }
+];
 
 export function Menu() {
-  const [selectedAccount, setSelectedAccount] = useState("personal");
-  const [groupDialogIsOpen, setGroupDialogIsOpen] = useState(false)
+  const [selectedAccount, setSelectedAccount] = useState({ id: "personal", role: "Pessoal" });
+  const [groupDialogIsOpen, setGroupDialogIsOpen] = useState(false);
 
   return (
     <Dialog open={groupDialogIsOpen} onOpenChange={setGroupDialogIsOpen}>
@@ -28,9 +33,16 @@ export function Menu() {
             variant="ghost"
             className="w-[250px] justify-between"
           >
-            {selectedAccount === "personal"
-              ? "Alisson Moura"
-              : groups.find((g) => g.id.toString() === selectedAccount)?.name}
+            <div className="flex items-center gap-2 overflow-hidden">
+              <span className="truncate">
+                {selectedAccount.id === "personal"
+                  ? "Alisson Moura"
+                  : groups.find((g) => g.id.toString() === selectedAccount.id)?.name}
+              </span>
+              <span className="bg-secondary text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded-full">
+                {selectedAccount.role}
+              </span>
+            </div>
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
@@ -39,14 +51,15 @@ export function Menu() {
             Conta Pessoal
           </DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => setSelectedAccount("personal")}
-            className="justify-between"
+            onClick={() => setSelectedAccount({ id: "personal", role: "Pessoal" })}
           >
-            <div className="flex items-center">
-              <User className="mr-2 h-4 w-4" />
-              <span>Alisson Matheus de Oliveira Moura</span>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <User className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate">Alisson Matheus de Oliveira Moura</span>
+              </div>
+              {selectedAccount.id === "personal" && <Check className="h-4 w-4 flex-shrink-0" />}
             </div>
-            {selectedAccount === "personal" && <Check className="h-4 w-4" />}
           </DropdownMenuItem>
           <DropdownMenuSeparator className="my-2" />
           <DropdownMenuLabel className="text-muted-foreground">
@@ -56,23 +69,31 @@ export function Menu() {
             {groups.map((group) => (
               <DropdownMenuItem
                 key={group.id}
-                onClick={() => setSelectedAccount(group.id.toString())}
-                className="justify-between"
+                onClick={() => setSelectedAccount({ id: group.id.toString(), role: group.role })}
               >
-                <div className="flex items-center">
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>{group.name}</span>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <Users className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{group.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-secondary text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded-full">
+                      {group.role}
+                    </span>
+                    {selectedAccount.id === group.id.toString() && (
+                      <Check className="h-4 w-4 flex-shrink-0" />
+                    )}
+                  </div>
                 </div>
-                {selectedAccount === group.id.toString() && (
-                  <Check className="h-4 w-4" />
-                )}
               </DropdownMenuItem>
             ))}
           </DropdownMenuGroup>
           <DialogTrigger asChild>
             <DropdownMenuItem>
-              <CirclePlus className="mr-2 h-4 w-4" />
-              <span className="font-semibold">Criar grupo</span>
+              <div className="flex items-center gap-2">
+                <CirclePlus className="h-4 w-4 flex-shrink-0" />
+                <span className="font-semibold">Criar grupo</span>
+              </div>
             </DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>

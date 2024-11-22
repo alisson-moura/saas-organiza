@@ -1,4 +1,11 @@
-import { Router, Mutation, Input, UseMiddlewares, Ctx } from 'nestjs-trpc';
+import {
+  Router,
+  Mutation,
+  Input,
+  UseMiddlewares,
+  Ctx,
+  Query,
+} from 'nestjs-trpc';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { AuthMiddleware } from '@server/trpc/auth.middleware';
@@ -26,7 +33,33 @@ export class GroupsRouter {
       };
     }
     throw new TRPCError({
-      message: 'errir',
+      message: 'error',
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Query({
+    output: z.object({
+      groups: z.array(
+        z.object({
+          role: z.string(),
+          group: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+        }),
+      ),
+    }),
+  })
+  async list(@Ctx() ctx: Context) {
+    const result = await this.groupService.list(parseInt(ctx.auth.id!));
+    if (result.success) {
+      return {
+        groups: result.data,
+      };
+    }
+    throw new TRPCError({
+      message: 'error',
       code: 'BAD_REQUEST',
     });
   }

@@ -53,7 +53,18 @@ const appRouter = t.router({
           message: 'A descrição do grupo precisa ter ao menos 20 caracteres.',
         })
         .max(140, { message: 'A descrição pode ter no máximo 140 caracteres.' }),
-    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    list: publicProcedure.output(z.object({
+      groups: z.array(
+        z.object({
+          role: z.string(),
+          group: z.object({
+            id: z.number(),
+            name: z.string(),
+          }),
+        }),
+      ),
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

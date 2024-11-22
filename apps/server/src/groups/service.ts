@@ -16,13 +16,41 @@ export class GroupsService {
         description: input.description,
         name: input.name,
         ownerId: accountId,
+        Member: {
+          create: [{ accountId, role: 'Lider' }],
+        },
       },
     });
+
     return {
       success: true,
       data: {
         id: groupInDB.id,
       },
+    };
+  }
+
+  async list(
+    accountId: number,
+  ): Promise<Result<{ role: string; group: { id: number; name: string } }[]>> {
+    const groups = await this.database.member.findMany({
+      where: {
+        accountId,
+      },
+      select: {
+        role: true,
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: groups,
     };
   }
 }

@@ -16,7 +16,7 @@ describe('Groups Service', () => {
   });
 
   describe('Criação de Grupo', () => {
-    it('Deve cruar um grupo com nome e descrição válidos', async () => {
+    it('Deve criar um grupo com nome e descrição válidos', async () => {
       // Dado que eu sou um usuário autenticado
       const accountId = 1;
       const input = {
@@ -37,6 +37,38 @@ describe('Groups Service', () => {
 
       expect(result.success).toBeTruthy();
       expect(result.data?.id).toEqual(1);
+    });
+  });
+
+  describe('Listagem de grupos', () => {
+    it('deve listar os grupos do usuário', async () => {
+      // Dado que eu sou um usuário autenticado
+      const accountId = 1;
+      // Mock da função do Prisma para simular a busca no banco
+      const groups = [
+        {
+          role: 'Líder',
+          group: {
+            id: 1,
+            name: 'Grupo de Estudos',
+          },
+        },
+        {
+          group: {
+            id: 2,
+            name: 'Equipe de Projetos',
+          },
+          role: 'Organizador',
+        },
+      ];
+      jest
+        .spyOn(prismaService.member, 'findMany')
+        .mockResolvedValue(groups as any);
+
+      const result = await service.list(accountId);
+
+      expect(result.success).toBeTruthy();
+      expect(result.data).toEqual(groups);
     });
   });
 });
