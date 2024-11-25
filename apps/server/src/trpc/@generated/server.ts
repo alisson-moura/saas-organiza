@@ -46,7 +46,7 @@ const appRouter = t.router({
     create: publicProcedure.input(z.object({
       name: z
         .string()
-        .min(8, { message: 'O nome precisa ter pelo menos 2 caracteres.' })
+        .min(8, { message: 'O nome precisa ter pelo menos 8 caracteres.' })
         .max(140, { message: 'O nome pode ter no máximo 140 caracteres.' }),
       description: z
         .string({ message: 'A descrição do grupo é obrigatória.' })
@@ -65,7 +65,13 @@ const appRouter = t.router({
           }),
         }),
       ),
-    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    invite: publicProcedure.input(z.object({
+      recipientEmail: z.string().email(),
+      role: z.enum(['Organizador', 'Participante', 'Observador']),
+      message: z.string().max(140).optional(),
+      groupId: z.number(),
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

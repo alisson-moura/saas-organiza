@@ -18,6 +18,7 @@ model Account {
   updatedAt DateTime @updatedAt
   group     Group[]
   Member    Member[]
+  invite    Invite[]
 
   @@map("accounts")
 }
@@ -37,6 +38,7 @@ model Group {
 
   owner  Account  @relation(fields: [ownerId], references: [id])
   Member Member[]
+  invite Invite[]
 
   @@map("groups")
 }
@@ -59,4 +61,33 @@ model Member {
   @@unique([accountId, groupId])
   @@index([accountId])
   @@map("members")
+}
+
+enum InviteStatus {
+  Accepted
+  Rejected
+  Canceled
+  Pending
+}
+
+model Invite {
+  id             Int          @id @default(autoincrement())
+  groupId        Int          @map("group_id")
+  createdBy      Int          @map("created_by") // Quem criou o convite
+  recipientEmail String       @map("recipient_email") // E-mail do destinatário
+  role           Role         @default(Observador) // Papel no grupo
+  status         InviteStatus @default(Pending) // Status do convite
+  expiresAt      DateTime?    @map("expires_at") // Validade do convite
+  createdAt      DateTime     @default(now()) @map("created_at") // Data de criação
+  updatedAt      DateTime     @updatedAt @map("updated_at") // Última atualização
+
+  // Relacionamentos
+  createdByAccount Account @relation(fields: [createdBy], references: [id]) // Relaciona quem criou
+  group            Group   @relation(fields: [groupId], references: [id]) // Grupo associado
+
+  // Índices para consultas rápidas
+  @@index([groupId])
+  @@index([recipientEmail])
+  @@index([status])
+  @@map("invites")
 }
