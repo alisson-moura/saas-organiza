@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, ChevronsUpDown, CirclePlus, User, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +23,7 @@ type Group = {
 };
 
 export function Menu() {
+  const navigate = useNavigate();
   const { data: personal, isLoading: isLoadingPersonal } =
     trpc.account.me.useQuery();
   const { data: groupsData, isLoading: isLoadingGroups } =
@@ -34,6 +36,9 @@ export function Menu() {
 
   const handleSelectGroup = (group: Group | null) => {
     setSelectedGroup(group);
+    if (group) {
+      navigate(`/group/${group.id}`);
+    }
   };
 
   const renderGroupItem = (group: Group) => (
@@ -87,7 +92,12 @@ export function Menu() {
           <DropdownMenuLabel className="text-muted-foreground">
             Conta Pessoal
           </DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setSelectedGroup(null)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setSelectedGroup(null);
+              navigate("/");
+            }}
+          >
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-2 overflow-hidden">
                 <User className="h-4 w-4 flex-shrink-0" />
@@ -103,11 +113,13 @@ export function Menu() {
             Grupos
           </DropdownMenuLabel>
           <DropdownMenuGroup>
-              {groupsData?.groups.map(item => renderGroupItem({
+            {groupsData?.groups.map((item) =>
+              renderGroupItem({
                 id: item.group.id,
                 name: item.group.name,
-                role: item.role
-              }))}
+                role: item.role,
+              })
+            )}
           </DropdownMenuGroup>
           <DialogTrigger asChild>
             <DropdownMenuItem>
