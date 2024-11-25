@@ -54,11 +54,11 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 8. **Convidar Membros**  
    **Como um** Líder ou Organizador, **eu quero** enviar convites para que outras pessoas participem do grupo **para que** possam colaborar nas listas.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟩 **Concluído**
 
 9. **Cancelar Convites**  
    **Como um** Líder, **eu quero** cancelar convites enviados **para que** convites incorretos sejam anulados.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟨 **Desenvolvendo**
 
 10. **Gerenciar Membros**  
    **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  

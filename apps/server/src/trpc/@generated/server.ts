@@ -66,12 +66,27 @@ const appRouter = t.router({
         }),
       ),
     })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    invite: publicProcedure.input(z.object({
+    createInvite: publicProcedure.input(z.object({
       recipientEmail: z.string().email(),
       role: z.enum(['Organizador', 'Participante', 'Observador']),
       message: z.string().max(140).optional(),
       groupId: z.number(),
-    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    cancelInvite: publicProcedure.input(z.object({
+      groupId: z.number(),
+      inviteId: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    listInvites: publicProcedure.input(z.object({
+      groupId: z.number(),
+    })).output(z.object({
+      invites: z.array(
+        z.object({
+          id: z.number(),
+          recipientEmail: z.string().email(),
+          createdAt: z.date(),
+        }),
+      ),
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

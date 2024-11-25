@@ -21,3 +21,9 @@ export const createInviteSchema = z.object({
   groupId: z.number(),
 });
 export type CreateInviteInput = z.infer<typeof createInviteSchema>;
+
+export const cancelInviteSchema = z.object({
+  groupId: z.number(),
+  inviteId: z.number(),
+});
+export type CancelInviteInput = z.infer<typeof cancelInviteSchema>;
