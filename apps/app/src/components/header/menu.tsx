@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronsUpDown, CirclePlus, User, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +24,8 @@ type Group = {
 
 export function Menu() {
   const navigate = useNavigate();
+
+  const { groupId } = useParams();
   const { data: personal, isLoading: isLoadingPersonal } =
     trpc.account.me.useQuery();
   const { data: groupsData, isLoading: isLoadingGroups } =
@@ -33,6 +35,23 @@ export function Menu() {
   const [groupDialogIsOpen, setGroupDialogIsOpen] = useState(false);
 
   const isLoading = isLoadingPersonal || isLoadingGroups;
+
+  useEffect(() => {
+    if (!isLoading && groupId) {
+      const currentGroup = groupsData?.groups.find(
+        (g) => g.group.id === parseInt(groupId)
+      );
+      if (currentGroup != null) {
+        setSelectedGroup({
+          id: currentGroup.group.id,
+          name: currentGroup.group.name,
+          role: currentGroup.role,
+        });
+      } else {
+        navigate('/')
+      }
+    }
+  }, [isLoading]);
 
   const handleSelectGroup = (group: Group | null) => {
     setSelectedGroup(group);
