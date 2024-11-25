@@ -78,6 +78,8 @@ const appRouter = t.router({
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     listInvites: publicProcedure.input(z.object({
       groupId: z.number(),
+      page: z.number().default(1),
+      limit: z.number().default(10),
     })).output(z.object({
       invites: z.array(
         z.object({
@@ -86,6 +88,8 @@ const appRouter = t.router({
           createdAt: z.date(),
         }),
       ),
+      total: z.number(),
+      page: z.number(),
     })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });

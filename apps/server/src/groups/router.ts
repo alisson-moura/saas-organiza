@@ -119,6 +119,8 @@ export class GroupsRouter {
   @Query({
     input: z.object({
       groupId: z.number(),
+      page: z.number().default(1),
+      limit: z.number().default(10),
     }),
     output: z.object({
       invites: z.array(
@@ -128,16 +130,23 @@ export class GroupsRouter {
           createdAt: z.date(),
         }),
       ),
+      total: z.number(),
+      page: z.number(),
     }),
   })
-  async listInvites(@Ctx() ctx: Context, @Input() input: { groupId: number }) {
+  async listInvites(
+    @Ctx() ctx: Context,
+    @Input() input: { groupId: number; limit: number; page: number },
+  ) {
     const result = await this.inviteService.list(
       parseInt(ctx.auth.id!),
       input.groupId,
+      input.page,
+      input.limit,
     );
     if (result.success) {
       return {
-        invites: result.data,
+        ...result.data,
       };
     }
 

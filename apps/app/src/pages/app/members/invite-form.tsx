@@ -43,8 +43,9 @@ const inviteFormSchema = z.object({
 });
 
 export function InviteForm() {
+  const utils = trpc.useUtils();
   const { groupId } = useParams();
-  const { mutateAsync: invite } = trpc.groups.invite.useMutation();
+  const { mutateAsync: invite } = trpc.groups.createInvite.useMutation();
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof inviteFormSchema>>({
@@ -67,6 +68,7 @@ export function InviteForm() {
       toast.success("Enviamos seu convite.", {
         description: `Convite enviado para: ${values.recipientEmail}`,
       });
+      await utils.groups.listInvites.invalidate()
       setOpen(false)
     } catch (error) {
       let message = "Aconteceu um erro inesperado.";
@@ -82,7 +84,7 @@ export function InviteForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Convidar</Button>
+        <Button size='sm'>Convidar</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>

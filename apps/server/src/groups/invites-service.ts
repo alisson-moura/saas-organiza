@@ -114,8 +114,14 @@ export class InviteService {
   async list(
     accountId: number,
     groupId: number,
+    page?: number,
+    limit?: number,
   ): Promise<
-    Result<{ id: number; recipientEmail: string; createdAt: Date }[]>
+    Result<{
+      invites: Array<{ id: number; recipientEmail: string; createdAt: Date }>;
+      page: number;
+      total: number;
+    }>
   > {
     const isMember = await this.database.member.findUnique({
       where: {
@@ -133,6 +139,14 @@ export class InviteService {
       };
     }
 
+    const total = await this.database.invite.count({
+      where: {
+        groupId,
+      },
+    });
+
+    limit = limit ? limit : 10;
+    page = page ? page : 1;
     const invites = await this.database.invite.findMany({
       where: {
         groupId,
@@ -142,6 +156,8 @@ export class InviteService {
         recipientEmail: true,
         createdAt: true,
       },
+      take: limit,
+      skip: (page - 1) * limit,
       orderBy: {
         createdAt: 'asc',
       },
@@ -149,7 +165,11 @@ export class InviteService {
 
     return {
       success: true,
-      data: invites,
+      data: {
+        invites,
+        total,
+        page,
+      },
     };
   }
 }
