@@ -1,5 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import { z } from "zod";
+import { createPaginatedResponseSchema } from "../../shared/pagination";
+import { createPaginatedRequestSchema } from "../../shared/pagination";
 
 const t = initTRPC.create();
 const publicProcedure = t.procedure;
@@ -90,7 +92,17 @@ const appRouter = t.router({
       ),
       total: z.number(),
       page: z.number(),
-    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    listMembers: publicProcedure.input(createPaginatedRequestSchema(
+      z.object({ groupId: z.number() }),
+    )).output(createPaginatedResponseSchema(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        email: z.string().email(),
+        role: z.string(),
+      }),
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

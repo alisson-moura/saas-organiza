@@ -1,3 +1,7 @@
+import {
+  createPaginatedRequestSchema,
+  createPaginatedResponseSchema,
+} from '@server/shared/pagination';
 import { z } from 'zod';
 
 export const createGroupSchema = z.object({
@@ -27,3 +31,18 @@ export const cancelInviteSchema = z.object({
   inviteId: z.number(),
 });
 export type CancelInviteInput = z.infer<typeof cancelInviteSchema>;
+
+export const getMembersInputSchema = createPaginatedRequestSchema(
+  z.object({ groupId: z.number() }),
+);
+export type GetMembersInput = z.infer<typeof getMembersInputSchema>;
+
+export const getMembersOutputSchema = createPaginatedResponseSchema(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string().email(),
+    role: z.string(),
+  }),
+);
+export type GetMembersOutput = z.infer<typeof getMembersOutputSchema>;

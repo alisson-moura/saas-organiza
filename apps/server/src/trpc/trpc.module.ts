@@ -3,6 +3,10 @@ import { TRPCModule } from 'nestjs-trpc';
 import { TrpcPanelController } from './trpc-panel.controller';
 import { AppContext } from './app.context';
 import { AuthMiddleware } from './auth.middleware';
+import {
+  createPaginatedRequestSchema,
+  createPaginatedResponseSchema,
+} from '../shared/pagination';
 
 @Global()
 @Module({
@@ -12,6 +16,10 @@ import { AuthMiddleware } from './auth.middleware';
         process.env.NODE_ENV === 'production'
           ? undefined
           : './src/trpc/@generated',
+      schemaFileImports: [
+        createPaginatedResponseSchema,
+        createPaginatedRequestSchema,
+      ],
       context: AppContext,
     }),
   ],

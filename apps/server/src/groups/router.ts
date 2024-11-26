@@ -16,6 +16,9 @@ import {
   createGroupSchema,
   CreateInviteInput,
   createInviteSchema,
+  GetMembersInput,
+  getMembersInputSchema,
+  getMembersOutputSchema,
 } from './schemas';
 import { GroupsService } from './service';
 import { Context } from '@server/trpc/app.context';
@@ -148,6 +151,26 @@ export class GroupsRouter {
       return {
         ...result.data,
       };
+    }
+
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @UseMiddlewares(AuthMiddleware)
+  @Query({
+    input: getMembersInputSchema,
+    output: getMembersOutputSchema,
+  })
+  async listMembers(@Ctx() ctx: Context, @Input() input: GetMembersInput) {
+    const result = await this.groupService.getMembers(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+    if (result.success) {
+      return result.data;
     }
 
     throw new TRPCError({

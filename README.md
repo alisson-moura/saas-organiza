@@ -58,7 +58,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 9. **Cancelar Convites**  
    **Como um** Líder, **eu quero** cancelar convites enviados **para que** convites incorretos sejam anulados.  
-   **Status:** 🟨 **Desenvolvendo**
+   **Status:** 🟩 **Concluído**
 
 10. **Gerenciar Membros**  
    **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  
