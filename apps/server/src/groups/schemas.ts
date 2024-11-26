@@ -46,3 +46,10 @@ export const getMembersOutputSchema = createPaginatedResponseSchema(
   }),
 );
 export type GetMembersOutput = z.infer<typeof getMembersOutputSchema>;
+
+export const changeMemberRoleSchema = z.object({
+  groupId: z.number(),
+  accountId: z.number(),
+  role: z.string(),
+});
+export type ChangeMemberRoleInput = z.infer<typeof changeMemberRoleSchema>;

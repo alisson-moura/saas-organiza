@@ -102,7 +102,12 @@ const appRouter = t.router({
         email: z.string().email(),
         role: z.string(),
       }),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    changeMemberRole: publicProcedure.input(z.object({
+      groupId: z.number(),
+      accountId: z.number(),
+      role: z.string(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

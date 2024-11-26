@@ -12,6 +12,8 @@ import { AuthMiddleware } from '@server/trpc/auth.middleware';
 import {
   CancelInviteInput,
   cancelInviteSchema,
+  ChangeMemberRoleInput,
+  changeMemberRoleSchema,
   CreateGroupInput,
   createGroupSchema,
   CreateInviteInput,
@@ -173,6 +175,27 @@ export class GroupsRouter {
       return result.data;
     }
 
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @UseMiddlewares(AuthMiddleware)
+  @Mutation({
+    input: changeMemberRoleSchema,
+  })
+  async changeMemberRole(
+    @Ctx() ctx: Context,
+    @Input() input: ChangeMemberRoleInput,
+  ) {
+    const result = await this.groupService.changeMemberRole(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+    if (result.success) {
+      return;
+    }
     throw new TRPCError({
       message: result.error,
       code: 'BAD_REQUEST',

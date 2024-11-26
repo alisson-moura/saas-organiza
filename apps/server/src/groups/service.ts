@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@server/libs/prisma.service';
-import { CreateGroupInput, GetMembersInput, GetMembersOutput } from './schemas';
+import {
+  ChangeMemberRoleInput,
+  CreateGroupInput,
+  GetMembersInput,
+  GetMembersOutput,
+} from './schemas';
 import { Result } from '@server/shared/result';
+import defineAbilitiesFor from '@organiza/authorization';
 
 @Injectable()
 export class GroupsService {
@@ -112,6 +118,68 @@ export class GroupsService {
         page: input.page,
         total: totalMembers,
       },
+    };
+  }
+
+  async changeMemberRole(
+    accountId: number,
+    input: ChangeMemberRoleInput,
+  ): Promise<Result<void>> {
+    const member = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId,
+          groupId: input.groupId,
+        },
+      },
+      select: {
+        role: true,
+        accountId: true,
+        groupId: true,
+      },
+    });
+    if (member == null) {
+      return {
+        success: false,
+        error: 'Você precisa estar no grupo para alterar um papel.',
+      };
+    }
+
+    const permissions = defineAbilitiesFor(member.role, member.groupId);
+    if (permissions.cannot('update', 'Member')) {
+      return {
+        success: false,
+        error: 'Apenas líderes e organizadores podem alterar papeis.',
+      };
+    }
+
+    const isOwnerGroup = await this.database.group.findUnique({
+      where: {
+        id: input.groupId,
+        ownerId: input.accountId,
+      },
+    });
+    if (isOwnerGroup) {
+      return {
+        success: false,
+        error: 'Não é possível alterar o papel do dono do grupo.',
+      };
+    }
+
+    await this.database.member.update({
+      where: {
+        accountId_groupId: {
+          accountId: input.accountId,
+          groupId: input.groupId,
+        },
+      },
+      data: {
+        role: input.role as any,
+      },
+    });
+
+    return {
+      success: true,
     };
   }
 }
