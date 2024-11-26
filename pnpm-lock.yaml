@@ -183,6 +183,9 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
+      '@faker-js/faker':
+        specifier: ^9.2.0
+        version: 9.2.0
       '@nestjs/cli':
         specifier: ^10.0.0
         version: 10.4.7
@@ -250,7 +253,7 @@ importers:
         specifier: ^9.4.3
         version: 9.5.1(typescript@5.6.3)(webpack@5.96.1)
       ts-node:
-        specifier: ^10.9.1
+        specifier: ^10.9.2
         version: 10.9.2(@types/node@20.17.6)(typescript@5.6.3)
       tsconfig-paths:
         specifier: ^4.2.0
@@ -647,6 +650,10 @@ packages:
   '@eslint/plugin-kit@0.2.2':
     resolution: {integrity: sha512-CXtq5nR4Su+2I47WPOlWud98Y5Lv8Kyxp2ukhgFx/eW6Blm18VXJO5WuQylPugRo8nbluoi6GvvxBLqHcvqUUw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@faker-js/faker@9.2.0':
+    resolution: {integrity: sha512-ulqQu4KMr1/sTFIYvqSdegHT8NIkt66tFAkugGnHA+1WAfEn6hMzNR+svjXGFRVLnapxvej67Z/LwchFrnLBUg==}
+    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
 
   '@floating-ui/core@1.6.8':
     resolution: {integrity: sha512-7XJ9cPU+yI2QeLS+FCSlqNFZJq8arvswefkZrYI1yQBbftw6FyrZOxYSh+9S7z7TpeWlRt9zJ5IhM1WIL334jA==}
@@ -4781,6 +4788,8 @@ snapshots:
   '@eslint/plugin-kit@0.2.2':
     dependencies:
       levn: 0.4.1
+
+  '@faker-js/faker@9.2.0': {}
 
   '@floating-ui/core@1.6.8':
     dependencies:
