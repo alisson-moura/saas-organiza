@@ -1,10 +1,12 @@
 {
-  "name": "saas-organiza",
+  "name": "@organiza",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "Aplicativo para organização em grupo.",
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --parallel dev",
+    "build:server": "pnpm install --filter 'server' --filter 'authorization' && pnpm --filter 'authorization' run build && pnpm --filter 'server' run build",
     "lint": "pnpm run --parallel lint"
   },
   "keywords": [],

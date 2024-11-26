@@ -1,0 +1,18 @@
+{
+  "name": "@organiza/authorization",
+  "version": "1.0.0",
+  "description": "Pacote de autorização com CASL",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@casl/ability": "^6.7.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  }
+}

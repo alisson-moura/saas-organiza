@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { defineAbilitiesFor } from '@organiza/authorization';
 import { PrismaService } from '@server/libs/prisma.service';
 import { Result } from '@server/shared/result';
 import { CancelInviteInput, CreateInviteInput } from './schemas';
@@ -11,7 +12,7 @@ export class InviteService {
     accountId: number,
     input: CreateInviteInput,
   ): Promise<Result<{ id: number; status: string }>> {
-    const createdBy = await this.database.member.findUnique({
+    const createdByMember = await this.database.member.findUnique({
       where: {
         accountId_groupId: {
           accountId,
@@ -21,16 +22,22 @@ export class InviteService {
       select: {
         role: true,
         accountId: true,
+        groupId: true,
       },
     });
 
-    if (createdBy == null) {
+    if (createdByMember == null) {
       return {
         success: false,
         error: 'Você precisa estar no grupo para realizar convites.',
       };
     }
-    if (createdBy.role !== 'Lider' && createdBy.role !== 'Organizador') {
+
+    const memberPermissions = defineAbilitiesFor(
+      createdByMember.role,
+      createdByMember.groupId,
+    );
+    if (memberPermissions.cannot('create', 'Invite')) {
       return {
         success: false,
         error: 'Apenas líderes e organizadores podem enviar convites.',
@@ -72,6 +79,7 @@ export class InviteService {
       select: {
         role: true,
         accountId: true,
+        groupId: true,
       },
     });
     if (canceledBy == null) {
@@ -80,7 +88,11 @@ export class InviteService {
         error: 'Você precisa estar no grupo para cancelar um convite.',
       };
     }
-    if (canceledBy.role !== 'Lider' && canceledBy.role !== 'Organizador') {
+    const memberPermissions = defineAbilitiesFor(
+      canceledBy.role,
+      canceledBy.groupId,
+    );
+    if (memberPermissions.cannot('delete', 'Invite')) {
       return {
         success: false,
         error: 'Apenas líderes e organizadores podem cancelar convites.',
