@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { defineAbilitiesFor } from '@organiza/authorization';
+import defineAbilitiesFor from '@organiza/authorization';
 import { PrismaService } from '@server/libs/prisma.service';
 import { Result } from '@server/shared/result';
 import { CancelInviteInput, CreateInviteInput } from './schemas';

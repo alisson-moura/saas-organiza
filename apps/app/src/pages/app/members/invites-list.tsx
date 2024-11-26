@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Loader2, Trash2Icon } from "lucide-react";
 import { format } from "date-fns";
@@ -13,10 +13,13 @@ import {
 } from "@app/components/ui/table";
 import { Card, CardContent } from "@app/components/ui/card";
 import { trpc } from "@app/lib/trpc";
+import { Can } from "@casl/react";
+import { AbilityContext } from "@app/lib/casl";
 
 const INVITES_PER_PAGE = 8;
 
 export function InviteList() {
+  const ability = useContext(AbilityContext);
   const utils = trpc.useUtils();
   const navigate = useNavigate();
   const { groupId } = useParams();
@@ -37,9 +40,7 @@ export function InviteList() {
     limit: INVITES_PER_PAGE,
   });
 
-  const totalPages = data?.total
-    ? Math.ceil(data.total / INVITES_PER_PAGE)
-    : 1;
+  const totalPages = data?.total ? Math.ceil(data.total / INVITES_PER_PAGE) : 1;
 
   const handleCancelInvite = async (inviteId: number) => {
     try {
@@ -63,7 +64,9 @@ export function InviteList() {
             <TableRow>
               <TableHead className="w-[250px]">E-mail</TableHead>
               <TableHead>Enviado em</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
+              <Can ability={ability} I="delete" a="Invite">
+                <TableHead className="text-right">Ações</TableHead>
+              </Can>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -88,21 +91,23 @@ export function InviteList() {
                   <TableCell>
                     {format(new Date(invite.createdAt), "dd/MM/yyyy HH:mm")}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      onClick={() => handleCancelInvite(invite.id)}
-                      disabled={loadingInviteId === invite.id}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      {loadingInviteId === invite.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2Icon className="w-4 h-4" />
-                      )}
-                      <span className="sr-only">Cancelar convite</span>
-                    </Button>
-                  </TableCell>
+                  <Can ability={ability} I="delete" a="Invite">
+                    <TableCell className="text-right">
+                      <Button
+                        onClick={() => handleCancelInvite(invite.id)}
+                        disabled={loadingInviteId === invite.id}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        {loadingInviteId === invite.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2Icon className="w-4 h-4" />
+                        )}
+                        <span className="sr-only">Cancelar convite</span>
+                      </Button>
+                    </TableCell>
+                  </Can>
                 </TableRow>
               ))
             )}
