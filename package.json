@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "pnpm run --parallel dev",
     "deploy:server": "pnpm install --filter 'server' --filter 'authorization' && pnpm --filter 'authorization' run build && pnpm --filter 'server' run migrate:deploy && pnpm --filter 'server' run build",
+    "deploy:app": "pnpm install --filter 'app' --filter 'authorization' && pnpm --filter 'authorization' run build && pnpm --filter 'app' run build",
     "lint": "pnpm run --parallel lint"
   },
   "keywords": [],
