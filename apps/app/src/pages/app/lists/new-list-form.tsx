@@ -22,7 +22,7 @@ import { Input } from "@app/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, PlusCircle } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Textarea } from "@app/components/ui/textarea";
 import { Button } from "@app/components/ui/button";
 import { trpc } from "@app/lib/trpc";
@@ -40,8 +40,8 @@ const newListFormSchema = z.object({
 });
 
 export function NewListForm() {
+  const utils = trpc.useUtils();
   const { groupId } = useParams<{ groupId: string }>();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const newListMutation = trpc.lists.create.useMutation();
 
@@ -68,7 +68,7 @@ export function NewListForm() {
     }
 
     try {
-      const result = await newListMutation.mutateAsync({
+      await newListMutation.mutateAsync({
         ...values,
         groupId: parseInt(groupId),
       });
@@ -78,7 +78,7 @@ export function NewListForm() {
       });
 
       setOpen(false);
-      navigate(`lists/${result.id}`);
+      await utils.lists.getAll.invalidate();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erro ao criar a lista.";
