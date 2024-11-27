@@ -71,4 +71,99 @@ describe('Groups Service', () => {
       expect(result.data).toEqual(groups);
     });
   });
+
+  describe('Alteração de Papel do Membro', () => {
+    const accountId = 1;
+    const groupId = 1;
+    const input = {
+      accountId: 2,
+      groupId,
+      role: 'Organizador',
+    };
+
+    it('Deve alterar o papel do membro com permissões válidas', async () => {
+      // Dado que o membro existe no grupo e tenho permissão para alterar o papel
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Lider',
+        accountId,
+        groupId,
+      });
+
+      jest.spyOn(prismaService.group, 'findUnique').mockResolvedValue(null); // Não é o dono do grupo
+
+      jest.spyOn(prismaService.member, 'update').mockResolvedValue(null as any); // Atualização simulada
+
+      // Quando a função é chamada
+      const result = await service.changeMemberRole(accountId, input);
+
+      // Então o papel do membro deve ser alterado com sucesso
+      expect(result.success).toBeTruthy();
+      expect(prismaService.member.update).toHaveBeenCalledWith({
+        where: {
+          accountId_groupId: {
+            accountId: input.accountId,
+            groupId: input.groupId,
+          },
+        },
+        data: {
+          role: input.role,
+        },
+      });
+    });
+
+    it('Não deve permitir alterar o papel de um membro que não está no grupo', async () => {
+      // Dado que o membro não existe no grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue(null);
+
+      // Quando a função é chamada
+      const result = await service.changeMemberRole(accountId, input);
+
+      // Então deve retornar erro indicando que o membro não está no grupo
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual(
+        'Você precisa estar no grupo para alterar um papel.',
+      );
+    });
+
+    it('Não deve permitir alterar o papel sem permissão adequada', async () => {
+      // Dado que o membro existe no grupo, mas não tem permissão
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Participante',
+        accountId,
+        groupId,
+      });
+
+      // Quando a função é chamada
+      const result = await service.changeMemberRole(accountId, input);
+
+      // Então deve retornar erro indicando falta de permissão
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual(
+        'Apenas líderes e organizadores podem alterar papeis.',
+      );
+    });
+
+    it('Não deve permitir alterar o papel do dono do grupo', async () => {
+      // Dado que o membro é o dono do grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Lider',
+        accountId,
+        groupId,
+      });
+
+      jest.spyOn(prismaService.group, 'findUnique').mockResolvedValue({
+        id: groupId,
+        ownerId: input.accountId,
+      } as any);
+
+      // Quando a função é chamada
+      const result = await service.changeMemberRole(accountId, input);
+
+      // Então deve retornar erro indicando que o papel do dono não pode ser alterado
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual(
+        'Não é possível alterar o papel do dono do grupo.',
+      );
+    });
+  });
 });

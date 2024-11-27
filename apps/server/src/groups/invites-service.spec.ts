@@ -97,8 +97,12 @@ describe('Invite Service', () => {
 
       jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
         accountId: lider.id,
-        role: lider.role,
-      } as any);
+        role: lider.role as any,
+        groupId: lider.groupId,
+      });
+      jest
+        .spyOn(prismaService.invite, 'findUnique')
+        .mockResolvedValue({} as any);
       jest.spyOn(prismaService.invite, 'delete').mockResolvedValue({} as any);
 
       // Quando eu seleciono a opção "Cancelar convite"
