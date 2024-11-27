@@ -1,3 +1,6 @@
+import { AbilityContext } from "@app/lib/casl";
+import { Can } from "@casl/react";
+import { useContext } from "react";
 import {
   Tabs,
   TabsContent,
@@ -9,6 +12,7 @@ import { InviteList } from "./invites-list";
 import { MembersList } from "./members";
 
 export function MembersPage() {
+  const ability = useContext(AbilityContext);
   return (
     <Tabs defaultValue="members" className="w-full max-w-4xl mx-auto">
       <div className="flex justify-between items-center gap-8">
@@ -16,7 +20,9 @@ export function MembersPage() {
           <TabsTrigger value="members">Membros</TabsTrigger>
           <TabsTrigger value="invites">Convites</TabsTrigger>
         </TabsList>
-        <InviteForm />
+        <Can ability={ability} I="create" a="Invite">
+          <InviteForm />
+        </Can>
       </div>
       <TabsContent value="members">
         <MembersList />
