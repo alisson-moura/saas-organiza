@@ -22,10 +22,10 @@ import { Input } from "@app/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, PlusCircle } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Textarea } from "@app/components/ui/textarea";
 import { Button } from "@app/components/ui/button";
-import { TRPCClientError } from "@trpc/react-query";
+import { trpc } from "@app/lib/trpc";
 import { useEffect, useState } from "react";
 
 const newListFormSchema = z.object({
@@ -40,8 +40,10 @@ const newListFormSchema = z.object({
 });
 
 export function NewListForm() {
-  const { groupId } = useParams();
+  const { groupId } = useParams<{ groupId: string }>();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const newListMutation = trpc.lists.create.useMutation();
 
   const form = useForm<z.infer<typeof newListFormSchema>>({
     resolver: zodResolver(newListFormSchema),
@@ -58,30 +60,39 @@ export function NewListForm() {
   }, [open, form]);
 
   async function onSubmit(values: z.infer<typeof newListFormSchema>) {
+    if (!groupId) {
+      toast.error("Grupo não selecionado.", {
+        description: "Selecione um grupo antes de criar uma lista.",
+      });
+      return;
+    }
+
     try {
-      if (!groupId) {
-        throw new Error("Selecione um grupo antes de criar uma lista.");
-      }
-      console.log(values);
-      setOpen(false);
+      const result = await newListMutation.mutateAsync({
+        ...values,
+        groupId: parseInt(groupId),
+      });
+
       toast.success("Lista criada com sucesso!", {
         description: `Sua lista "${values.title}" foi compartilhada com o grupo.`,
       });
+
+      setOpen(false);
+      navigate(`lists/${result.id}`);
     } catch (error) {
-      let message = "Algo deu errado.";
-      if (error instanceof TRPCClientError || error instanceof Error) {
-        message = error.message;
-      }
-      toast.error("Não foi possível criar a lista.", {
-        description: message,
-      });
+      const message =
+        error instanceof Error ? error.message : "Erro ao criar a lista.";
+      toast.error("Não foi possível criar a lista.", { description: message });
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center">
+        <Button
+          disabled={newListMutation.isLoading}
+          className="flex items-center"
+        >
           <PlusCircle className="mr-2 h-4 w-4" />
           Criar nova lista
         </Button>
@@ -136,8 +147,13 @@ export function NewListForm() {
               )}
             />
             <DialogFooter>
-              <Button disabled={form.formState.isSubmitting} type="submit">
-                {form.formState.isSubmitting ? (
+              <Button
+                type="submit"
+                disabled={
+                  form.formState.isSubmitting || newListMutation.isLoading
+                }
+              >
+                {form.formState.isSubmitting || newListMutation.isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   "Criar"
