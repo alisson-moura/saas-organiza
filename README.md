@@ -62,7 +62,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 10. **Gerenciar Membros**  
    **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  
-   **Status:** 🟥 **Pendente**
+   **Status:** 🟩 **Concluído**
 
 ---
 
@@ -70,7 +70,7 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 11. **Criar Lista**  
     **Como um** Líder ou Organizador, **eu quero** criar uma lista com nome e descrição **para que** o grupo possa organizar tarefas, compras ou outras atividades.  
-    **Status:** 🟥 **Pendente**
+    **Status:** 🟨 **Desenvolvendo**
 
 12. **Adicionar Itens à Lista**  
     **Como um** Líder ou Organizador, **eu quero** adicionar itens à lista **para que** os membros saibam as tarefas, itens ou atividades a serem realizadas.  

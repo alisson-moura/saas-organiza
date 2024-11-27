@@ -18,19 +18,24 @@ export function defineAbilitiesFor(role: Role, groupId: number) {
     case "Lider":
       can("manage", "Invite", { groupId });
       can("manage", "Member", { groupId });
+      can("manage", "List", { groupId });
       break;
     case "Organizador":
       can("manage", "Invite", { groupId });
       can("read", "Member", { groupId });
       can("update", "Member", { groupId });
+      can("create", "List", { groupId });
+      can("read", "List", { groupId });
       break;
     case "Participante":
       can("read", "Member", { groupId });
       can("read", "Invite", { groupId });
+      can("read", "List", { groupId });
       break;
     case "Observador":
       can("read", "Member", { groupId });
       can("read", "Invite", { groupId });
+      can("read", "List", { groupId });
       break;
 
     default:
