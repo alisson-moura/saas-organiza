@@ -131,4 +131,48 @@ export class ListsService {
       },
     };
   }
+
+  async delete(
+    requesterId: number,
+    input: { id: number },
+  ): Promise<Result<void>> {
+    const list = await this.database.list.findUniqueOrThrow({
+      where: {
+        id: input.id,
+      },
+    });
+    const member = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId: requesterId,
+          groupId: list.groupId,
+        },
+      },
+    });
+
+    if (member == null) {
+      return {
+        success: false,
+        error: 'Você precisa ser membro do grupo para deletar uma lista.',
+      };
+    }
+
+    const permissions = defineAbilitiesFor(member.role, member.groupId);
+    if (permissions.cannot('create', 'List')) {
+      return {
+        success: false,
+        error: 'Apenas Líderes e Organizadores podem deletar listas.',
+      };
+    }
+
+    await this.database.list.delete({
+      where: {
+        id: list.id,
+      },
+    });
+
+    return {
+      success: true,
+    };
+  }
 }

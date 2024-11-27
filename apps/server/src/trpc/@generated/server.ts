@@ -119,6 +119,9 @@ const appRouter = t.router({
       description: z.string(),
       groupId: z.number(),
     })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    delete: publicProcedure.input(z.object({
+      id: z.number(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     getAll: publicProcedure.input(createPaginatedRequestSchema(
       z.object({
         groupId: z.number(),

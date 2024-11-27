@@ -9,10 +9,10 @@ import {
   UseMiddlewares,
 } from 'nestjs-trpc';
 import { AuthMiddleware } from '@server/trpc/auth.middleware';
-import { z } from 'zod';
 import { Context } from '@server/trpc/app.context';
 import { TRPCError } from '@trpc/server';
 import { getListsDto, GetListsDto, listsDto } from './dto/get-lists.dto';
+import { z } from 'zod';
 
 @UseMiddlewares(AuthMiddleware)
 @Router({ alias: 'lists' })
@@ -33,6 +33,25 @@ export class ListsRouter {
         id: result.data?.id,
       };
     }
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Mutation({
+    input: z.object({
+      id: z.number(),
+    }),
+  })
+  async delete(@Ctx() ctx: Context, @Input() input: { id: number }) {
+    const result = await this.listsService.delete(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+
+    if (result.success) return;
+
     throw new TRPCError({
       message: result.error,
       code: 'BAD_REQUEST',

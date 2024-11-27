@@ -111,4 +111,77 @@ describe('List Service', () => {
       expect(list.error).toEqual('Já existe uma lista com esse nome no grupo.');
     });
   });
+
+  describe('Remover Lista', () => {
+    it('deve ser possível que o Líder remova uma lista', async () => {
+      // Dado que eu sou o Líder de um grupo
+      const lider = { id: 1, role: 'Lider', groupId: 1 };
+
+      jest.spyOn(prismaService.list, 'findUniqueOrThrow').mockResolvedValue({
+        id: 1,
+        groupId: lider.groupId,
+      } as any);
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: lider.id,
+        role: lider.role,
+        groupId: lider.groupId,
+      } as any);
+
+      jest.spyOn(prismaService.list, 'delete').mockResolvedValue({
+        id: 1,
+        title: 'Lista Exemplo',
+      } as any);
+
+      // Quando eu tento deletar uma lista
+      const result = await service.delete(lider.id, { id: 1 });
+
+      // Então a lista deve ser deletada com sucesso
+      expect(result.success).toBe(true);
+    });
+    it('não deve ser possível que um Participante remova uma lista', async () => {
+      // Dado que eu sou um Participante de um grupo
+      const participante = { id: 3, role: 'Participante', groupId: 1 };
+
+      jest.spyOn(prismaService.list, 'findUniqueOrThrow').mockResolvedValue({
+        id: 1,
+        groupId: participante.groupId,
+      } as any);
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: participante.id,
+        role: participante.role,
+        groupId: participante.groupId,
+      } as any);
+
+      // Quando eu tento deletar uma lista
+      const result = await service.delete(participante.id, { id: 1 });
+
+      // Então a lista não deve ser deletada
+      expect(result.success).toBe(false);
+      expect(result.error).toEqual(
+        'Apenas Líderes e Organizadores podem deletar listas.',
+      );
+    });
+    it('não deve ser possível que uma pessoa que não é membro do grupo remova uma lista', async () => {
+      // Dado que eu não sou membro do grupo
+      const naoMembro = { id: 5, role: 'Lider', groupId: 2 };
+
+      jest.spyOn(prismaService.list, 'findUniqueOrThrow').mockResolvedValue({
+        id: 1,
+        groupId: 1,
+      } as any);
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue(null);
+
+      // Quando eu tento deletar uma lista
+      const result = await service.delete(naoMembro.id, { id: 1 });
+
+      // Então a lista não deve ser deletada
+      expect(result.success).toBe(false);
+      expect(result.error).toEqual(
+        'Você precisa ser membro do grupo para deletar uma lista.',
+      );
+    });
+  });
 });
