@@ -118,7 +118,22 @@ const appRouter = t.router({
       title: z.string(),
       description: z.string(),
       groupId: z.number(),
-    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getAll: publicProcedure.input(createPaginatedRequestSchema(
+      z.object({ groupId: z.number() }),
+    )).output(createPaginatedResponseSchema(
+      z.object({
+        id: z.number(),
+        title: z.string(),
+        description: z.string(),
+        createdAt: z.date(),
+        groupId: z.number(),
+        owner: z.object({
+          id: z.number(),
+          name: z.string(),
+        }),
+      }),
+    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

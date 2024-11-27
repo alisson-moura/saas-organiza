@@ -3,6 +3,7 @@ import defineAbilitiesFor from '@organiza/authorization';
 import { CreateListDto } from './dto/create-list.dto';
 import { PrismaService } from '@server/libs/prisma.service';
 import { Result } from '@server/shared/result';
+import { GetListsDto, ListsDto } from './dto/get-lists.dto';
 
 @Injectable()
 export class ListsService {
@@ -66,6 +67,64 @@ export class ListsService {
       success: true,
       data: {
         id: list.id,
+      },
+    };
+  }
+
+  async getAll(
+    requesterId: number,
+    input: GetListsDto,
+  ): Promise<Result<ListsDto>> {
+    const requester = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId: requesterId,
+          groupId: input.item.groupId,
+        },
+      },
+    });
+    if (requester == null) {
+      return {
+        success: false,
+        error: 'Você só pode visualizar  as listas do seu grupo.',
+      };
+    }
+
+    const total = await this.database.list.count({
+      where: {
+        groupId: input.item.groupId,
+      },
+    });
+    const items = await this.database.list.findMany({
+      where: {
+        groupId: input.item.groupId,
+      },
+      select: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        id: true,
+        title: true,
+        description: true,
+        createdAt: true,
+        groupId: true,
+      },
+      take: input.limit,
+      skip: (input.page - 1) * input.limit,
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    return {
+      success: true,
+      data: {
+        items,
+        total,
+        limit: input.limit,
+        page: input.page,
       },
     };
   }
