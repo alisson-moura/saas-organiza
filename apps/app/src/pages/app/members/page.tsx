@@ -14,7 +14,7 @@ import { MembersList } from "./members";
 export function MembersPage() {
   const ability = useContext(AbilityContext);
   return (
-    <Tabs defaultValue="members" className="w-full max-w-4xl mx-auto">
+    <Tabs defaultValue="members" className="w-full max-w-screen-lg mx-auto">
       <div className="flex justify-between items-center gap-8">
         <TabsList>
           <TabsTrigger value="members">Membros</TabsTrigger>

@@ -68,7 +68,7 @@ export function GroupPage() {
   const hasFilteredResults = data?.items.length > 0;
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8">
+    <div className="w-full max-w-screen-lg mx-auto space-y-8">
       {hasLists && (
         <div className="flex justify-between items-center gap-4">
           <form onSubmit={handleSearchByTitle} className="flex flex-1 gap-2">
@@ -92,7 +92,7 @@ export function GroupPage() {
 
       {hasLists ? (
         hasFilteredResults ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {data.items.map((item) => (
               <ListCard
                 key={item.id}
