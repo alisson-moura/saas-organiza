@@ -34,7 +34,7 @@ export class ListsRouter {
       };
     }
     throw new TRPCError({
-      message: 'error',
+      message: result.error,
       code: 'BAD_REQUEST',
     });
   }
