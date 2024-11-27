@@ -98,6 +98,9 @@ export class ListsService {
     const items = await this.database.list.findMany({
       where: {
         groupId: input.item.groupId,
+        title: {
+          contains: input.item.title,
+        },
       },
       select: {
         owner: {

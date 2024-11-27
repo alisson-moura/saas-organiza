@@ -120,7 +120,10 @@ const appRouter = t.router({
       groupId: z.number(),
     })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     getAll: publicProcedure.input(createPaginatedRequestSchema(
-      z.object({ groupId: z.number() }),
+      z.object({
+        groupId: z.number(),
+        title: z.string().optional(),
+      }),
     )).output(createPaginatedResponseSchema(
       z.object({
         id: z.number(),

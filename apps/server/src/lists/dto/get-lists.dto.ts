@@ -5,7 +5,10 @@ import {
 import { z } from 'zod';
 
 export const getListsDto = createPaginatedRequestSchema(
-  z.object({ groupId: z.number() }),
+  z.object({
+    groupId: z.number(),
+    title: z.string().optional(),
+  }),
 );
 export type GetListsDto = z.infer<typeof getListsDto>;
 
