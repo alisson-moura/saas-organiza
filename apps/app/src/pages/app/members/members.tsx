@@ -87,6 +87,32 @@ export function MembersList() {
     },
   });
 
+  // Mutation com tratamento de erro
+  const removeMemberMutation = trpc.groups.removeMember.useMutation({
+    onError: (error) => {
+      toast.error("Não conseguimos remover o membro.", {
+        description: error.message || "Aconteceu um erro inesperado.",
+      });
+    },
+    onSuccess: (_, { memberId }) => {
+      // Atualização otimista do cache
+      utils.groups.listMembers.setData(
+        {
+          item: { groupId: groupIdNumber },
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+        },
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            items: oldData.items.filter((item) => item.id !== memberId),
+          };
+        }
+      );
+    },
+  });
+
   // Função de handler separada
   const handleChangeRole = (memberId: number, role: MemberRole) => {
     changeMemberRoleMutation.mutate({
@@ -95,6 +121,16 @@ export function MembersList() {
       groupId: groupIdNumber,
     });
   };
+
+  const handleRemoveMember = (memberId: number) => {
+    removeMemberMutation.mutate({
+      memberId,
+      groupId: groupIdNumber,
+    });
+  };
+  const removeMemberIsLoading = (memberId: number) =>
+    removeMemberMutation.isLoading &&
+    removeMemberMutation.variables?.memberId === memberId;
 
   // Componente de paginação extraído
   const PaginationControls = () => (
@@ -173,11 +209,19 @@ export function MembersList() {
                   </TableCell>
                   <TableCell className="text-right">
                     <Button
-                      disabled={ability.cannot("delete", "Member")}
+                      disabled={
+                        ability.cannot("delete", "Member") ||
+                        removeMemberIsLoading(member.id)
+                      }
+                      onClick={() => handleRemoveMember(member.id)}
                       variant="destructive"
                       size="sm"
                     >
-                      <Trash2Icon className="w-4 h-4" />
+                      {removeMemberIsLoading(member.id) ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2Icon className="w-4 h-4" />
+                      )}
                       <span className="sr-only">Remover do grupo</span>
                     </Button>
                   </TableCell>
