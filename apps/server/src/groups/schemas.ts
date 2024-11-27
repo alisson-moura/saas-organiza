@@ -53,3 +53,9 @@ export const changeMemberRoleSchema = z.object({
   role: z.string(),
 });
 export type ChangeMemberRoleInput = z.infer<typeof changeMemberRoleSchema>;
+
+export const removeMemberSchema = z.object({
+  groupId: z.number(),
+  memberId: z.number(),
+});
+export type RemoveMemberInput = z.infer<typeof removeMemberSchema>;

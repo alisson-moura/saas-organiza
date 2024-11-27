@@ -107,6 +107,10 @@ const appRouter = t.router({
       groupId: z.number(),
       accountId: z.number(),
       role: z.string(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    removeMember: publicProcedure.input(z.object({
+      groupId: z.number(),
+      memberId: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });

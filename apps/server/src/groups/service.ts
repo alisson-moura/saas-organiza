@@ -5,6 +5,7 @@ import {
   CreateGroupInput,
   GetMembersInput,
   GetMembersOutput,
+  RemoveMemberInput,
 } from './schemas';
 import { Result } from '@server/shared/result';
 import defineAbilitiesFor from '@organiza/authorization';
@@ -175,6 +176,61 @@ export class GroupsService {
       },
       data: {
         role: input.role as any,
+      },
+    });
+
+    return {
+      success: true,
+    };
+  }
+
+  async removeMember(
+    requesterId: number,
+    input: RemoveMemberInput,
+  ): Promise<Result<void>> {
+    const requester = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId: requesterId,
+          groupId: input.groupId,
+        },
+      },
+    });
+
+    if (requester == null) {
+      return {
+        success: false,
+        error: 'Você precisa estar no grupo para alterar um papel.',
+      };
+    }
+
+    const permissions = defineAbilitiesFor(requester.role, requester.groupId);
+    if (permissions.cannot('delete', 'Member')) {
+      return {
+        success: false,
+        error: 'Apenas líderes podem remover membros do grupo.',
+      };
+    }
+
+    const isOwner = await this.database.group.findUnique({
+      where: {
+        id: input.groupId,
+        ownerId: input.memberId,
+      },
+    });
+    if (isOwner != null) {
+      return {
+        success: false,
+        error: 'O dono do grupo não pode ser removido.',
+      };
+    }
+
+    await this.database.member.delete({
+      where: {
+        accountId_groupId: {
+          accountId: input.memberId,
+          groupId: input.groupId,
+        },
       },
     });
 

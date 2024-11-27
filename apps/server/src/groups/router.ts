@@ -21,6 +21,8 @@ import {
   GetMembersInput,
   getMembersInputSchema,
   getMembersOutputSchema,
+  RemoveMemberInput,
+  removeMemberSchema,
 } from './schemas';
 import { GroupsService } from './service';
 import { Context } from '@server/trpc/app.context';
@@ -190,6 +192,24 @@ export class GroupsRouter {
     @Input() input: ChangeMemberRoleInput,
   ) {
     const result = await this.groupService.changeMemberRole(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+    if (result.success) {
+      return;
+    }
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @UseMiddlewares(AuthMiddleware)
+  @Mutation({
+    input: removeMemberSchema,
+  })
+  async removeMember(@Ctx() ctx: Context, @Input() input: RemoveMemberInput) {
+    const result = await this.groupService.removeMember(
       parseInt(ctx.auth.id!),
       input,
     );

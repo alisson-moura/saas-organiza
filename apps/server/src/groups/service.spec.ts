@@ -166,4 +166,90 @@ describe('Groups Service', () => {
       );
     });
   });
+
+  describe('Remoção de Membro do Grupo', () => {
+    const accountId = 1; // ID do usuário que executa a ação
+    const groupId = 1; // ID do grupo
+    const input = { groupId, memberId: 2 }; // ID do membro a ser removido
+
+    it('Deve remover um membro do grupo quando o usuário for líder', async () => {
+      // Dado que o usuário é líder no grupo e o membro não é o dono do grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Lider',
+        accountId,
+        groupId,
+      });
+
+      jest.spyOn(prismaService.group, 'findUnique').mockResolvedValue(null); // O membro não é o dono do grupo
+
+      jest.spyOn(prismaService.member, 'delete').mockResolvedValue(null as any); // Simula a remoção do membro
+
+      // Quando a função é chamada
+      const result = await service.removeMember(accountId, input);
+
+      // Então o membro deve ser removido com sucesso
+      expect(result.success).toBeTruthy();
+      expect(prismaService.member.delete).toHaveBeenCalledWith({
+        where: {
+          accountId_groupId: {
+            accountId: input.memberId,
+            groupId: input.groupId,
+          },
+        },
+      });
+    });
+
+    it('Não deve permitir remover um membro quando o usuário não for líder', async () => {
+      // Dado que o usuário não é líder no grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Organizador',
+        accountId,
+        groupId,
+      });
+
+      // Quando a função é chamada
+      const result = await service.removeMember(accountId, input);
+
+      // Então deve retornar um erro indicando falta de permissão
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual(
+        'Apenas líderes podem remover membros do grupo.',
+      );
+    });
+
+    it('Não deve permitir remover o dono do grupo', async () => {
+      // Dado que o membro a ser removido é o dono do grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        role: 'Lider',
+        accountId,
+        groupId,
+      });
+
+      jest.spyOn(prismaService.group, 'findUnique').mockResolvedValue({
+        id: groupId,
+        ownerId: input.memberId, // O membro é o dono do grupo
+      } as any);
+
+      // Quando a função é chamada
+      const result = await service.removeMember(accountId, input);
+
+      // Então deve retornar um erro indicando que o dono do grupo não pode ser removido
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual('O dono do grupo não pode ser removido.');
+    });
+
+    it('Não deve permitir remover um membro que não existe no grupo', async () => {
+      // Dado que o membro não existe no grupo
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue(null);
+
+      // Quando a função é chamada
+      const result = await service.removeMember(accountId, input);
+
+      // Então deve retornar um erro indicando que o membro não foi encontrado
+      expect(result.success).toBeFalsy();
+      expect(result.error).toEqual(
+        'Você precisa estar no grupo para alterar um papel.',
+      );
+    });
+  });
 });
