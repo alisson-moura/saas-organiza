@@ -5,6 +5,7 @@ import { TrpcModule } from './trpc/trpc.module';
 import { LibsModule } from './libs/libs.module';
 import { envSchema } from './env-validation';
 import { GroupsModule } from './groups/module';
+import { ListsModule } from './lists/lists.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GroupsModule } from './groups/module';
     TrpcModule,
     AccountsModule,
     GroupsModule,
+    ListsModule,
   ],
   controllers: [],
   providers: [],

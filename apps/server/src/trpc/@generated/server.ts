@@ -112,6 +112,13 @@ const appRouter = t.router({
       groupId: z.number(),
       memberId: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  lists: t.router({
+    create: publicProcedure.input(z.object({
+      title: z.string(),
+      description: z.string(),
+      groupId: z.number(),
+    })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

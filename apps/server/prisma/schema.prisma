@@ -19,6 +19,7 @@ model Account {
   group     Group[]
   Member    Member[]
   invite    Invite[]
+  List      List[]
 
   @@map("accounts")
 }
@@ -39,6 +40,7 @@ model Group {
   owner  Account  @relation(fields: [ownerId], references: [id])
   Member Member[]
   invite Invite[]
+  List   List[]
 
   @@map("groups")
 }
@@ -90,4 +92,21 @@ model Invite {
   @@index([recipientEmail])
   @@index([status])
   @@map("invites")
+}
+
+model List {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  groupId     Int      @map("group_id")
+  ownerId     Int      @map("owner_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group Group   @relation(fields: [groupId], references: [id])
+  owner Account @relation(fields: [ownerId], references: [id])
+
+  @@unique([groupId, title])
+  @@index([groupId])
+  @@map("lists")
 }
