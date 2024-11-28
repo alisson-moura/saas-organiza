@@ -6,25 +6,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@app/components/ui/card";
-import { Button } from "@app/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@app/components/ui/tooltip";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Edit } from "lucide-react";
 import { DeleteListAlert } from "./delete-list-alert";
+import { EditListForm } from "@app/pages/app/lists/edit-list-form";
 
-interface ListCardProps {
+export interface ListProps {
   title: string;
   description: string;
   createdAt: Date;
   ownerName: string;
-  ability: AppAbility;
   id: number;
+}
+interface ListCardProps extends ListProps {
+  ability: AppAbility;
 }
 
 export function ListCard({
@@ -43,18 +38,13 @@ export function ListCard({
         </CardTitle>
         <Can ability={ability} I="manage" a="List">
           <div className="flex space-x-1">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" aria-label="Editar lista">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Editar lista</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <EditListForm
+              id={id}
+              createdAt={createdAt}
+              description={description}
+              ownerName={ownerName}
+              title={title}
+            />
             <DeleteListAlert id={id} />
           </div>
         </Can>

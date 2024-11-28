@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Edit } from "lucide-react";
 import { toast } from "sonner";
 import {
   DialogContent,
@@ -21,69 +22,68 @@ import {
 import { Input } from "@app/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, PlusCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Textarea } from "@app/components/ui/textarea";
 import { Button } from "@app/components/ui/button";
 import { trpc } from "@app/lib/trpc";
 import { useEffect, useState } from "react";
+import { ListProps } from "@app/components/list-card";
+import { listFormSchema } from "./new-list-form";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const listFormSchema = z.object({
-  title: z
-    .string()
-    .min(2, "O título precisa ter pelo menos 2 caracteres.")
-    .max(140, "O título pode ter no máximo 140 caracteres."),
-  description: z
-    .string()
-    .min(10, "A descrição precisa ter pelo menos 10 caracteres.")
-    .max(340, "A descrição pode ter no máximo 340 caracteres."),
-});
-
-export function NewListForm() {
+export function EditListForm({
+  id,
+  title,
+  description,
+  createdAt,
+  ownerName,
+}: ListProps) {
   const utils = trpc.useUtils();
   const { groupId } = useParams<{ groupId: string }>();
   const [open, setOpen] = useState(false);
-  const newListMutation = trpc.lists.create.useMutation();
+  const editListMutation = trpc.lists.update.useMutation();
 
   const form = useForm<z.infer<typeof listFormSchema>>({
     resolver: zodResolver(listFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: title || "",
+      description: description || "",
     },
   });
 
   useEffect(() => {
-    if (!open) {
-      form.reset();
+    if (open) {
+      form.reset({ title, description }); // Reseta o formulário com os valores atuais da lista
     }
-  }, [open, form]);
+  }, [open, form, title, description]);
 
   async function onSubmit(values: z.infer<typeof listFormSchema>) {
     if (!groupId) {
       toast.error("Grupo não selecionado.", {
-        description: "Selecione um grupo antes de criar uma lista.",
+        description: "Selecione um grupo antes de editar uma lista.",
       });
       return;
     }
 
     try {
-      await newListMutation.mutateAsync({
+      await editListMutation.mutateAsync({
+        id,
         ...values,
         groupId: parseInt(groupId),
       });
 
-      toast.success("Lista criada com sucesso!", {
-        description: `Sua lista "${values.title}" foi compartilhada com o grupo.`,
+      toast.success("Lista atualizada com sucesso!", {
+        description: `A lista "${values.title}" foi atualizada.`,
       });
 
-      setOpen(false);
       await utils.lists.getAll.invalidate();
+      setOpen(false);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Erro ao criar a lista.";
-      toast.error("Não foi possível criar a lista.", { description: message });
+        error instanceof Error ? error.message : "Erro ao atualizar a lista.";
+      toast.error("Não foi possível atualizar a lista.", {
+        description: message,
+      });
     }
   }
 
@@ -91,20 +91,31 @@ export function NewListForm() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={newListMutation.isLoading}
+          variant="ghost"
+          size="icon"
+          disabled={editListMutation.isLoading}
           className="flex items-center"
         >
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Criar nova lista
+          <Edit />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Nova Lista</DialogTitle>
+          <DialogTitle>Editar Lista</DialogTitle>
           <DialogDescription>
-            Crie uma nova lista e compartilhe com seu grupo.
+            Atualize as informações da lista. Certifique-se de preencher todos
+            os campos.
           </DialogDescription>
         </DialogHeader>
+        <div className="mb-4 text-sm text-muted-foreground">
+          <p>
+            <strong>Autor:</strong> {ownerName}
+          </p>
+          <p>
+            <strong>Criada em:</strong>{" "}
+            {new Date(createdAt).toLocaleDateString()}
+          </p>
+        </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -151,13 +162,13 @@ export function NewListForm() {
               <Button
                 type="submit"
                 disabled={
-                  form.formState.isSubmitting || newListMutation.isLoading
+                  form.formState.isSubmitting || editListMutation.isLoading
                 }
               >
-                {form.formState.isSubmitting || newListMutation.isLoading ? (
+                {form.formState.isSubmitting || editListMutation.isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  "Criar"
+                  "Atualizar"
                 )}
               </Button>
             </DialogFooter>

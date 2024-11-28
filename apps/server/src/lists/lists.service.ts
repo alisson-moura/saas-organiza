@@ -190,6 +190,17 @@ export class ListsService {
         error: 'Já existe uma lista com esse nome no grupo.',
       };
     }
+
+    await this.database.list.update({
+      where: {
+        id: input.id,
+        groupId: input.groupId,
+      },
+      data: {
+        title: input.title,
+        description: input.description,
+      },
+    });
     return {
       success: true,
     };
