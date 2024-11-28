@@ -3,6 +3,7 @@ import { Can } from "@casl/react";
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@app/components/ui/card";
@@ -10,6 +11,9 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { DeleteListAlert } from "./delete-list-alert";
 import { EditListForm } from "@app/pages/app/lists/edit-list-form";
+import { Button } from "./ui/button";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export interface ListProps {
   title: string;
@@ -31,7 +35,7 @@ export function ListCard({
   id,
 }: ListCardProps) {
   return (
-    <Card className="h-[200px] flex flex-col">
+    <Card className="h-[200px] flex flex-col transition-transform hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="truncate flex-1 mr-2" title={title}>
           {title}
@@ -56,7 +60,9 @@ export function ListCard({
         >
           {description}
         </p>
-        <div className="flex justify-between text-xs text-muted-foreground mt-auto">
+      </CardContent>
+      <CardFooter className="flex items-center justify-between">
+        <div className="text-sm flex flex-col gap-4text-xs text-muted-foreground mt-auto">
           <span className="truncate" title={`Criado por: ${ownerName}`}>
             Criado por: {ownerName}
           </span>
@@ -67,7 +73,12 @@ export function ListCard({
             })}
           </span>
         </div>
-      </CardContent>
+        <Link to={`${id}`}>
+          <Button variant="outline" size="icon">
+            <ArrowRight />
+          </Button>
+        </Link>
+      </CardFooter>
     </Card>
   );
 }
