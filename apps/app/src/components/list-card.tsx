@@ -1,3 +1,5 @@
+import { AppAbility } from "@organiza/authorization";
+import { Can } from "@casl/react";
 import {
   Card,
   CardContent,
@@ -13,13 +15,16 @@ import {
 } from "@app/components/ui/tooltip";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
+import { DeleteListAlert } from "./delete-list-alert";
 
 interface ListCardProps {
   title: string;
   description: string;
   createdAt: Date;
   ownerName: string;
+  ability: AppAbility;
+  id: number;
 }
 
 export function ListCard({
@@ -27,6 +32,8 @@ export function ListCard({
   description,
   createdAt,
   ownerName,
+  ability,
+  id,
 }: ListCardProps) {
   return (
     <Card className="h-[200px] flex flex-col">
@@ -34,32 +41,23 @@ export function ListCard({
         <CardTitle className="truncate flex-1 mr-2" title={title}>
           {title}
         </CardTitle>
-        <div className="flex space-x-1">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Editar lista">
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Editar lista</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Remover lista">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Remover lista</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <Can ability={ability} I="manage" a="List">
+          <div className="flex space-x-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="Editar lista">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Editar lista</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <DeleteListAlert id={id} />
+          </div>
+        </Can>
       </CardHeader>
       <CardContent className="flex flex-col justify-between flex-grow overflow-hidden">
         <p

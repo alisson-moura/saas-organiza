@@ -29,8 +29,8 @@ export function GroupPage() {
     },
     {
       keepPreviousData: true,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    }
+      staleTime: 5 * 60 * 1000, // 5 minutes,
+    },
   );
 
   const totalPages = useMemo(
@@ -68,7 +68,7 @@ export function GroupPage() {
   const hasFilteredResults = data?.items.length > 0;
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto space-y-8">
+    <div className="w-full max-w-screen-lg mx-auto space-y-8 relative">
       {hasLists && (
         <div className="flex justify-between items-center gap-4">
           <form onSubmit={handleSearchByTitle} className="flex flex-1 gap-2">
@@ -84,7 +84,7 @@ export function GroupPage() {
               <Search />
             </Button>
           </form>
-          <Can ability={ability}  I="create" a="List">
+          <Can ability={ability} I="create" a="List">
             <NewListForm />
           </Can>
         </div>
@@ -96,6 +96,8 @@ export function GroupPage() {
             {data.items.map((item) => (
               <ListCard
                 key={item.id}
+                id={item.id}
+                ability={ability}
                 createdAt={new Date(item.createdAt)}
                 description={item.description}
                 ownerName={item.owner.name}
