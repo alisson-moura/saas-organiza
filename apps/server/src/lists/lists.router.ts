@@ -13,6 +13,7 @@ import { Context } from '@server/trpc/app.context';
 import { TRPCError } from '@trpc/server';
 import { getListsDto, GetListsDto, listsDto } from './dto/get-lists.dto';
 import { z } from 'zod';
+import { UpdateListDto, updateListDto } from './dto/update-list.dto';
 
 @UseMiddlewares(AuthMiddleware)
 @Router({ alias: 'lists' })
@@ -32,6 +33,23 @@ export class ListsRouter {
       return {
         id: result.data?.id,
       };
+    }
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Mutation({
+    input: updateListDto,
+  })
+  async update(@Ctx() ctx: Context, @Input() updateListDto: UpdateListDto) {
+    const result = await this.listsService.update(
+      parseInt(ctx.auth.id!),
+      updateListDto,
+    );
+    if (result.success) {
+      return;
     }
     throw new TRPCError({
       message: result.error,

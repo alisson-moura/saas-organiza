@@ -184,4 +184,149 @@ describe('List Service', () => {
       );
     });
   });
+
+  describe('Atualização de Lista', () => {
+    it('deve ser possível que o líder atualize uma lista', async () => {
+      // Dado que eu sou o Líder de um grupo
+      const lider = { id: 1, role: 'Lider', groupId: 1 };
+      const listaExistente = { id: 1, title: 'Lista de Compras', groupId: 1 };
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: lider.id,
+        role: lider.role,
+        groupId: lider.id,
+      } as any);
+
+      jest
+        .spyOn(prismaService.list, 'findUnique')
+        .mockResolvedValue(listaExistente as any);
+
+      jest.spyOn(prismaService.list, 'update').mockResolvedValue({
+        id: listaExistente.id,
+        title: 'Lista de Compras Atualizada',
+        description: 'Descrição Atualizada',
+      } as any);
+
+      // Quando eu tento atualizar uma lista
+      const list = await service.update(lider.id, {
+        id: listaExistente.id,
+        title: 'Lista de Compras Atualizada',
+        description: 'Descrição Atualizada',
+        groupId: listaExistente.groupId,
+      });
+
+      // Então a lista deve ser atualizada
+      expect(list.success).toBe(true);
+    });
+    it('não deve ser possível que um Participante atualize uma lista', async () => {
+      // Dado que eu sou um Participante de um grupo
+      const participante = { id: 3, role: 'Participante', groupId: 1 };
+      const listaExistente = { id: 1, title: 'Lista de Compras', groupId: 1 };
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: participante.id,
+        role: participante.role,
+        groupId: participante.id,
+      } as any);
+
+      jest
+        .spyOn(prismaService.list, 'findUnique')
+        .mockResolvedValue(listaExistente as any);
+
+      // Quando eu tento atualizar uma lista
+      const list = await service.update(participante.id, {
+        id: listaExistente.id,
+        title: 'Lista de Compras Atualizada',
+        description: 'Descrição Atualizada',
+        groupId: listaExistente.groupId,
+      });
+
+      // Então a lista não deve ser atualizada
+      expect(list.success).toBe(false);
+      expect(list.error).toEqual(
+        'Apenas líderes e organizadores podem atualizar listas.',
+      );
+    });
+    it('não deve ser possível atualizar uma lista inexistente', async () => {
+      // Dado que eu sou o Líder de um grupo
+      const lider = { id: 1, role: 'Lider', groupId: 1 };
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: lider.id,
+        role: lider.role,
+        groupId: lider.groupId,
+      } as any);
+
+      jest.spyOn(prismaService.list, 'findUnique').mockResolvedValue(null);
+
+      // Quando eu tento atualizar uma lista que não existe
+      const list = await service.update(lider.id, {
+        id: 1, // lista que não existe no grupo
+        title: 'Lista de Compras Atualizada',
+        description: 'Descrição Atualizada',
+        groupId: lider.groupId,
+      });
+
+      // Então a atualização deve falhar
+      expect(list.success).toBe(false);
+      expect(list.error).toEqual('Lista não encontrada.');
+    });
+    it('não deve ser possível atualizar uma lista se o nome já existir no mesmo grupo', async () => {
+      // Dado que eu sou o Líder de um grupo
+      const lider = { id: 1, role: 'Lider', groupId: 1 };
+      const listaExistente = { id: 1, title: 'Lista de Compras', groupId: 1 };
+
+      jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue({
+        accountId: lider.id,
+        role: lider.role,
+      } as any);
+
+      jest
+        .spyOn(prismaService.list, 'findUnique')
+        .mockResolvedValue(listaExistente as any);
+
+      jest.spyOn(prismaService.list, 'findFirst').mockResolvedValue({
+        id: 2,
+        title: 'Lista de Compras Atualizada',
+        groupId: lider.groupId,
+      } as any);
+
+      // Quando eu tento atualizar a lista com um nome duplicado
+      const list = await service.update(lider.id, {
+        id: listaExistente.id,
+        groupId: listaExistente.groupId,
+        title: 'Lista de Compras Atualizada',
+        description: 'Descrição Atualizada',
+      });
+
+      // Então a lista não deve ser atualizada
+      expect(list.success).toBe(false);
+      expect(list.error).toEqual('Já existe uma lista com esse nome no grupo.');
+    });
+  });
+  it('não deve ser possível atualizar uma lista se o usuário não for membro do grupo', async () => {
+    // Dado que eu não sou membro de um grupo
+    const naoMembro = { id: 5, role: 'Lider', groupId: 2 };
+    const listaExistente = { id: 1, title: 'Lista de Compras', groupId: 1 };
+
+    jest.spyOn(prismaService.member, 'findUnique').mockResolvedValue(null);
+
+    jest
+      .spyOn(prismaService.list, 'findUnique')
+      .mockResolvedValue(listaExistente as any);
+
+    // Quando eu tento atualizar a lista
+    const list = await service.update(naoMembro.id, {
+      id: listaExistente.id,
+      groupId: listaExistente.groupId,
+      title: 'Lista Atualizada',
+      description: 'Descrição Atualizada',
+    });
+
+    // Então a lista não deve ser atualizada
+    expect(list.success).toBe(false);
+    expect(list.error).toEqual(
+      'Você precisa ser membro do grupo para atualizar uma lista.',
+    );
+  });
 });

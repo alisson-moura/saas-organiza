@@ -119,6 +119,15 @@ const appRouter = t.router({
       description: z.string(),
       groupId: z.number(),
     })).output(z.object({ id: z.number() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    update: publicProcedure.input(z
+      .object({
+        id: z.number(),
+      })
+      .merge(z.object({
+        title: z.string(),
+        description: z.string(),
+        groupId: z.number(),
+      }))).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     delete: publicProcedure.input(z.object({
       id: z.number(),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),

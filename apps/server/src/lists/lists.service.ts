@@ -4,6 +4,7 @@ import { CreateListDto } from './dto/create-list.dto';
 import { PrismaService } from '@server/libs/prisma.service';
 import { Result } from '@server/shared/result';
 import { GetListsDto, ListsDto } from './dto/get-lists.dto';
+import { UpdateListDto } from './dto/update-list.dto';
 
 @Injectable()
 export class ListsService {
@@ -129,6 +130,68 @@ export class ListsService {
         limit: input.limit,
         page: input.page,
       },
+    };
+  }
+
+  async update(
+    requesterId: number,
+    input: UpdateListDto,
+  ): Promise<Result<void>> {
+    const requester = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId: requesterId,
+          groupId: input.groupId,
+        },
+      },
+    });
+
+    if (requester == null) {
+      return {
+        success: false,
+        error: 'Você precisa ser membro do grupo para atualizar uma lista.',
+      };
+    }
+    const permissions = defineAbilitiesFor(requester.role, requester.groupId);
+    if (permissions.cannot('update', 'List')) {
+      return {
+        success: false,
+        error: 'Apenas líderes e organizadores podem atualizar listas.',
+      };
+    }
+
+    const list = await this.database.list.findUnique({
+      where: {
+        id: input.id,
+        groupId: input.groupId,
+      },
+    });
+    if (list == null) {
+      return {
+        success: false,
+        error: 'Lista não encontrada.',
+      };
+    }
+
+    const titleInUse = await this.database.list.findFirst({
+      where: {
+        groupId: list.groupId,
+        title: input.title,
+        id: {
+          not: {
+            equals: list.id,
+          },
+        },
+      },
+    });
+    if (titleInUse != null) {
+      return {
+        success: false,
+        error: 'Já existe uma lista com esse nome no grupo.',
+      };
+    }
+    return {
+      success: true,
     };
   }
 
