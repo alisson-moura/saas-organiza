@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: "/", element: <Dashboard /> },
-      {path: '/group/:groupId', element: <GroupPage />},
+      {path: '/group/:groupId/lists', element: <GroupPage />},
       {path: '/group/:groupId/members', element: <MembersPage />},
       {path: '/group/:groupId/lists/:listId', element: <ListPage />}
     ],

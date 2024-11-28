@@ -56,7 +56,7 @@ export function Menu() {
   const handleSelectGroup = (group: Group | null) => {
     setSelectedGroup(group);
     if (group) {
-      navigate(`/group/${group.id}`);
+      navigate(`/group/${group.id}/lists`);
     }
   };
 

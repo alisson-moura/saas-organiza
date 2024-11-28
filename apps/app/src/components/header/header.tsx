@@ -1,9 +1,10 @@
-import { Users, ListTodo } from "lucide-react";
+import { Users, ListTodo, ListCheck } from "lucide-react";
 import { Separator } from "@app/components/ui/separator";
 import { ModeToggle } from "../theme/mode-toggle";
 import { AccountMenu } from "./account-menu";
 import { Menu } from "./menu";
-import { NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { NavLink } from "./nav-link";
 
 export function Header() {
   const { groupId } = useParams();
@@ -15,12 +16,14 @@ export function Header() {
         <Separator orientation="vertical" className="h-6" />
         <Menu />
         {groupId && (
-          <NavLink
-            to={`group/${groupId}/members`}
-            className="flex gap-2 items-center"
-          >
-            <Users className="w-4 h-4" /> Membros
-          </NavLink>
+          <div className="flex gap-4">
+            <NavLink to={`group/${groupId}/lists`}>
+              <ListCheck className="w-4 h-4" /> Listas
+            </NavLink>
+            <NavLink to={`group/${groupId}/members`}>
+              <Users className="w-4 h-4" /> Membros
+            </NavLink>
+          </div>
         )}
         <div className="ml-auto flex items-center gap-2">
           <ModeToggle />
