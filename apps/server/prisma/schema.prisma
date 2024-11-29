@@ -20,6 +20,7 @@ model Account {
   Member    Member[]
   invite    Invite[]
   List      List[]
+  Item      Item[]
 
   @@map("accounts")
 }
@@ -96,17 +97,49 @@ model Invite {
 
 model List {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String
+  title       String   @db.VarChar(100)
+  description String?  @db.Text
   groupId     Int      @map("group_id")
   ownerId     Int      @map("owner_id")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  group Group   @relation(fields: [groupId], references: [id])
-  owner Account @relation(fields: [ownerId], references: [id])
+  group Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  owner Account @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  items Item[]
 
   @@unique([groupId, title])
   @@index([groupId])
   @@map("lists")
+}
+
+enum ItemStatus {
+  pending
+  processing
+  done
+}
+
+enum ItemPriority {
+  high
+  low
+  medium
+}
+
+model Item {
+  id          Int          @id @default(autoincrement())
+  title       String       @db.VarChar(200)
+  description String?      @db.Text
+  status      ItemStatus   @default(pending)
+  priority    ItemPriority @default(medium)
+  listId      Int
+  assignedId  Int?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  list     List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  assigned Account? @relation(fields: [assignedId], references: [id], onDelete: SetNull)
+
+  @@unique([listId, title])
+  @@index([listId, assignedId])
+  @@map("items")
 }
