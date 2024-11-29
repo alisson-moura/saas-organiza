@@ -70,11 +70,11 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 11. **Criar Lista**  
     **Como um** Líder ou Organizador, **eu quero** criar uma lista com nome e descrição **para que** o grupo possa organizar tarefas, compras ou outras atividades.  
-    **Status:** 🟨 **Desenvolvendo**
+    **Status:** 🟩 **Concluído**
 
 12. **Adicionar Itens à Lista**  
     **Como um** Líder ou Organizador, **eu quero** adicionar itens à lista **para que** os membros saibam as tarefas, itens ou atividades a serem realizadas.  
-    **Status:** 🟥 **Pendente**
+    **Status:** 🟨 **Desenvolvendo**
 
 13. **Marcar Itens como Concluídos**  
     **Como um** Participante ou superior, **eu quero** marcar itens da lista como concluídos **para que** o grupo saiba o que já foi feito.  

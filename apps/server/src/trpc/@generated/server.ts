@@ -136,19 +136,30 @@ const appRouter = t.router({
         groupId: z.number(),
         title: z.string().optional(),
       }),
-    )).output(createPaginatedResponseSchema(
-      z.object({
+    )).output(createPaginatedResponseSchema(z.object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string(),
+      createdAt: z.date(),
+      groupId: z.number(),
+      owner: z.object({
         id: z.number(),
-        title: z.string(),
-        description: z.string(),
-        createdAt: z.date(),
-        groupId: z.number(),
-        owner: z.object({
-          id: z.number(),
-          name: z.string(),
-        }),
+        name: z.string(),
       }),
-    )).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    get: publicProcedure.input(z.object({
+      id: z.number(),
+    })).output(z.object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string(),
+      createdAt: z.date(),
+      groupId: z.number(),
+      owner: z.object({
+        id: z.number(),
+        name: z.string(),
+      }),
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

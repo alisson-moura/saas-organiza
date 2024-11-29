@@ -3,7 +3,12 @@ import defineAbilitiesFor from '@organiza/authorization';
 import { CreateListDto } from './dto/create-list.dto';
 import { PrismaService } from '@server/libs/prisma.service';
 import { Result } from '@server/shared/result';
-import { GetListsDto, ListsDto } from './dto/get-lists.dto';
+import {
+  GetListDto,
+  GetListsDto,
+  ListDto,
+  ListsDto,
+} from './dto/get-lists.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 
 @Injectable()
@@ -130,6 +135,52 @@ export class ListsService {
         limit: input.limit,
         page: input.page,
       },
+    };
+  }
+
+  async get(requesterId: number, input: GetListDto): Promise<Result<ListDto>> {
+    const list = await this.database.list.findUnique({
+      where: {
+        id: input.id,
+      },
+      select: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        id: true,
+        title: true,
+        description: true,
+        createdAt: true,
+        groupId: true,
+      },
+    });
+    if (list == null) {
+      return {
+        success: false,
+        error: 'Você só pode visualizar  as listas do seu grupo.',
+      };
+    }
+    const requester = await this.database.member.findUnique({
+      where: {
+        accountId_groupId: {
+          accountId: requesterId,
+          groupId: list?.groupId,
+        },
+      },
+    });
+    if (requester == null) {
+      return {
+        success: false,
+        error: 'Você só pode visualizar as listas do seu grupo.',
+      };
+    }
+
+    return {
+      success: true,
+      data: list,
     };
   }
 

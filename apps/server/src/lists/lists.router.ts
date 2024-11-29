@@ -11,7 +11,14 @@ import {
 import { AuthMiddleware } from '@server/trpc/auth.middleware';
 import { Context } from '@server/trpc/app.context';
 import { TRPCError } from '@trpc/server';
-import { getListsDto, GetListsDto, listsDto } from './dto/get-lists.dto';
+import {
+  GetListDto,
+  getListDto,
+  getListsDto,
+  GetListsDto,
+  listDto,
+  listsDto,
+} from './dto/get-lists.dto';
 import { z } from 'zod';
 import { UpdateListDto, updateListDto } from './dto/update-list.dto';
 
@@ -85,6 +92,21 @@ export class ListsRouter {
       parseInt(ctx.auth.id!),
       input,
     );
+    if (result.success) {
+      return result.data;
+    }
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Query({
+    input: getListDto,
+    output: listDto,
+  })
+  async get(@Ctx() ctx: Context, @Input() input: GetListDto) {
+    const result = await this.listsService.get(parseInt(ctx.auth.id!), input);
     if (result.success) {
       return result.data;
     }
