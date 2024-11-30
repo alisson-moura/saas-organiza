@@ -159,7 +159,18 @@ const appRouter = t.router({
         id: z.number(),
         name: z.string(),
       }),
-    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    addItem: publicProcedure.input(z.object({
+      listId: z.number().positive(),
+      title: z.string().min(2).max(200),
+      description: z.string().nullish(),
+      priority: z.union([
+        z.literal('high'),
+        z.literal('low'),
+        z.literal('medium'),
+      ]),
+      assignedId: z.number().positive().nullish(),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;
