@@ -139,7 +139,7 @@ const appRouter = t.router({
     )).output(createPaginatedResponseSchema(z.object({
       id: z.number(),
       title: z.string(),
-      description: z.string(),
+      description: z.string().nullish(),
       createdAt: z.date(),
       groupId: z.number(),
       owner: z.object({
@@ -152,7 +152,7 @@ const appRouter = t.router({
     })).output(z.object({
       id: z.number(),
       title: z.string(),
-      description: z.string(),
+      description: z.string().nullish(),
       createdAt: z.date(),
       groupId: z.number(),
       owner: z.object({

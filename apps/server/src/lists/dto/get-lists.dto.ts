@@ -20,7 +20,7 @@ export type GetListDto = z.infer<typeof getListDto>;
 export const listDto = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string(),
+  description: z.string().nullish(),
   createdAt: z.date(),
   groupId: z.number(),
   owner: z.object({

@@ -19,6 +19,7 @@ export function defineAbilitiesFor(role: Role, groupId: number) {
       can("manage", "Invite", { groupId });
       can("manage", "Member", { groupId });
       can("manage", "List", { groupId });
+      can("manage", "Item", { groupId });
       break;
     case "Organizador":
       can("manage", "Invite", { groupId });
@@ -26,6 +27,7 @@ export function defineAbilitiesFor(role: Role, groupId: number) {
       can("update", "Member", { groupId });
       can("create", "List", { groupId });
       can("read", "List", { groupId });
+      can("manage", "Item", { groupId });
       break;
     case "Participante":
       can("read", "Member", { groupId });

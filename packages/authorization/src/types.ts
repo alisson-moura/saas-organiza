@@ -10,7 +10,7 @@ export const RoleSchema = z.enum([
 export type Role = z.infer<typeof RoleSchema>;
 
 // Define os possíveis recursos do sistema
-export const ResourceSchema = z.enum(["Member", "Invite", "List", "all"]);
+export const ResourceSchema = z.enum(["Member", "Invite", "List", "Item", "all"]);
 export type Resource = z.infer<typeof ResourceSchema>;
 
 // Define as possíveis ações
