@@ -1,10 +1,8 @@
-import { Button } from "@app/components/ui/button";
 import { trpc } from "@app/lib/trpc";
-import { PlusCircle } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { DataTable } from "./items/data-table";
 import { columns, Item } from "./items/columns";
-
+import { ItemForm } from "./items/new-item";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const items: Item[] = [
@@ -182,13 +180,15 @@ export const items: Item[] = [
   },
 ];
 
-
-
 export function ListPage() {
-  const { listId } = useParams<{ listId: string }>();
+  const { listId, groupId } = useParams<{ listId: string; groupId: string }>();
   const { data } = trpc.lists.get.useQuery({
     id: parseInt(listId!),
   });
+
+  if (!listId || !groupId) {
+    return <h1>Nenhuma lista selecionada</h1>;
+  }
 
   return (
     <div className="w-full max-w-screen-lg mx-auto space-y-8">
@@ -197,12 +197,7 @@ export function ListPage() {
           <h2 className="text-2xl font-bold tracking-tight">{data?.title}</h2>
           <p className="text-muted-foreground">{data?.description}</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button>
-            <PlusCircle />
-            Item
-          </Button>
-        </div>
+        <ItemForm groupId={parseInt(groupId)} listId={parseInt(listId)} />
       </div>
       <div className="mx-auto">
         <DataTable columns={columns} data={items} />
