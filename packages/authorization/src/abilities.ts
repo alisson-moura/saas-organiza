@@ -33,11 +33,14 @@ export function defineAbilitiesFor(role: Role, groupId: number) {
       can("read", "Member", { groupId });
       can("read", "Invite", { groupId });
       can("read", "List", { groupId });
+      can("read", "Item", { groupId });
+      can("update", "Item", { groupId });
       break;
     case "Observador":
       can("read", "Member", { groupId });
       can("read", "Invite", { groupId });
       can("read", "List", { groupId });
+      can("read", "Item", { groupId });
       break;
 
     default:
