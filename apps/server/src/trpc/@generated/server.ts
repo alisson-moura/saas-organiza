@@ -170,7 +170,32 @@ const appRouter = t.router({
         z.literal('medium'),
       ]),
       assignedId: z.number().positive().nullish(),
-    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getItems: publicProcedure.input(createPaginatedRequestSchema(
+      z.object({
+        listId: z.number(),
+        title: z.string().optional(),
+      }),
+    )).output(createPaginatedResponseSchema(z.object({
+      id: z.number(),
+      title: z.string(),
+      description: z.string().nullish(),
+      status: z.union([
+        z.literal('pending'),
+        z.literal('processing'),
+        z.literal('done'),
+      ]),
+      priority: z.union([z.literal('high'), z.literal('low'), z.literal('medium')]),
+      listId: z.number(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+      assigned: z
+        .object({
+          id: z.number(),
+          name: z.string(),
+        })
+        .nullish(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

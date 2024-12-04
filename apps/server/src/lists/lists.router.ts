@@ -23,6 +23,8 @@ import { z } from 'zod';
 import { UpdateListDto, updateListDto } from './dto/update-list.dto';
 import { CreateItemDto, createItemDto } from './dto/create-item.dto';
 import { CreateItemUseCase } from './use-cases/create-item';
+import { GetItems, getItemsDto, itemsDto } from './dto/get-items.dto';
+import { ListItemsUseCase } from './use-cases/list-items';
 
 @UseMiddlewares(AuthMiddleware)
 @Router({ alias: 'lists' })
@@ -30,6 +32,7 @@ export class ListsRouter {
   constructor(
     private readonly listsService: ListsService,
     private readonly createItemUseCase: CreateItemUseCase,
+    private readonly listItemsUseCase: ListItemsUseCase,
   ) {}
 
   @Mutation({
@@ -131,6 +134,24 @@ export class ListsRouter {
     );
     if (result.success) return;
 
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Query({
+    input: getItemsDto,
+    output: itemsDto,
+  })
+  async getItems(@Ctx() ctx: Context, @Input() input: GetItems) {
+    const result = await this.listItemsUseCase.execute(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+    if (result.success) {
+      return result.data;
+    }
     throw new TRPCError({
       message: result.error,
       code: 'BAD_REQUEST',
