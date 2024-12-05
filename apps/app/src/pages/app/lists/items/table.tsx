@@ -21,9 +21,18 @@ import { Input } from "@app/components/ui/input";
 import { useMemo, useState } from "react";
 import { trpc } from "@app/lib/trpc";
 import { columns } from "./columns";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@app/components/ui/select";
 
 interface TableProps {
-  listId: number
+  listId: number;
 }
 
 export function ItemsTable({ listId }: TableProps) {
@@ -44,8 +53,7 @@ export function ItemsTable({ listId }: TableProps) {
     },
     { keepPreviousData: true }
   );
-  const defaultData = useMemo(() => [], [])
-  
+  const defaultData = useMemo(() => [], []);
 
   const table = useReactTable({
     data: data.data?.items ?? defaultData,
@@ -65,7 +73,6 @@ export function ItemsTable({ listId }: TableProps) {
       columnFilters,
     },
   });
-
 
   return (
     <div>
@@ -131,7 +138,27 @@ export function ItemsTable({ listId }: TableProps) {
         <span>
           Página {pagination.pageIndex + 1} de {table.getPageCount()}
         </span>
-        <div className="space-x-2">
+        <div className="space-x-2 flex">
+          <Select
+            onValueChange={(e) => {
+              table.setPageSize(Number(e))
+            }}
+            defaultValue={`${pagination.pageSize}`}
+          >
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Selecione a quantidade de itens por página" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Itens por página</SelectLabel>
+                <SelectItem value="10">10 itens</SelectItem>
+                <SelectItem value="20">20 itens</SelectItem>
+                <SelectItem value="30">30 itens</SelectItem>
+                <SelectItem value="40">40 itens</SelectItem>
+                <SelectItem value="50">50 itens</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <Button
             variant="outline"
             size="sm"
