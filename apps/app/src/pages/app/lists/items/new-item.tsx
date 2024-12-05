@@ -52,9 +52,11 @@ export function ItemForm({
   listId: number;
   groupId: number;
 }) {
+  const trpcUtils = trpc.useUtils()
   const { mutateAsync: addItem } = trpc.lists.addItem.useMutation();
   const { data: members } = trpc.groups.listMembers.useQuery({
     item: { groupId },
+    page: 1
   });
   const [open, setOpen] = useState(false);
 
@@ -78,6 +80,7 @@ export function ItemForm({
       toast.success("Item adicionado.", {
         description: `Novo item: ${values.title}`,
       });
+      await trpcUtils.lists.invalidate()
       setOpen(false);
     } catch (error) {
       let message = "Aconteceu um erro inesperado.";

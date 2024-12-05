@@ -5,7 +5,7 @@ export function createPaginatedResponseSchema<ItemType extends z.ZodTypeAny>(
 ) {
   return z.object({
     total: z.number(),
-    page: z.number().default(1),
+    page: z.number().default(0),
     limit: z.number().min(5).max(50).default(10),
     items: z.array(itemSchema),
   });
@@ -16,7 +16,7 @@ export function createPaginatedRequestSchema<ItemType extends z.ZodTypeAny>(
 ) {
   return z.object({
     item: itemSchema,
-    page: z.number().min(1).default(1),
+    page: z.number().default(0),
     limit: z.number().min(5).max(50).default(10),
   });
 }

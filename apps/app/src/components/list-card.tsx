@@ -17,7 +17,7 @@ import { Link } from "react-router-dom";
 
 export interface ListProps {
   title: string;
-  description: string;
+  description: string | null | undefined;
   createdAt: Date;
   ownerName: string;
   id: number;
@@ -56,7 +56,6 @@ export function ListCard({
       <CardContent className="flex flex-col justify-between flex-grow overflow-hidden">
         <p
           className="text-sm text-muted-foreground mb-2 line-clamp-3"
-          title={description}
         >
           {description}
         </p>

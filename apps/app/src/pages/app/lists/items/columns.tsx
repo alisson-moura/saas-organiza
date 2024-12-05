@@ -23,11 +23,13 @@ export type Item = {
   id: number;
   title: string;
   assigned?: {
-    accountId: number;
+    id: number;
     name: string;
-  };
+  } | null;
+  description?: string | null
   priority: "high" | "low" | "medium";
   status: "pending" | "processing" | "done";
+  listId: number
 };
 
 const priorityLabels = [
@@ -131,7 +133,7 @@ export const columns: ColumnDef<Item>[] = [
         return null;
       }
       return (
-        <div className="flex w-[150px] justify-center items-center">
+        <div className="flex w-full justify-center items-center">
           {priority.icon && (
             <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}

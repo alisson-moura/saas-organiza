@@ -36,6 +36,12 @@ export class ListItemsUseCase {
       };
     }
 
+    const total = await this.database.item.count({
+      where: {
+        listId: list.id,
+        title: input.item.title,
+      },
+    });
     const items = await this.database.item.findMany({
       where: {
         listId: list.id,
@@ -58,7 +64,7 @@ export class ListItemsUseCase {
         },
       },
       take: input.limit,
-      skip: (input.page - 1) * input.limit,
+      skip: input.page * input.limit,
       orderBy: {
         createdAt: 'desc',
       },
@@ -67,7 +73,7 @@ export class ListItemsUseCase {
     return {
       success: true,
       data: {
-        total: 0,
+        total,
         page: input.page,
         limit: input.limit,
         items,

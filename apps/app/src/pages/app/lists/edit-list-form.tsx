@@ -53,7 +53,7 @@ export function EditListForm({
 
   useEffect(() => {
     if (open) {
-      form.reset({ title, description }); // Reseta o formulário com os valores atuais da lista
+      form.reset({ title, description: "" }); // Reseta o formulário com os valores atuais da lista
     }
   }, [open, form, title, description]);
 
