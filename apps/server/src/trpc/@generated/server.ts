@@ -195,7 +195,15 @@ const appRouter = t.router({
           name: z.string(),
         })
         .nullish(),
-    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    changeItemStatus: publicProcedure.input(z.object({
+      itemId: z.number(),
+      status: z.union([
+        z.literal('pending'),
+        z.literal('processing'),
+        z.literal('done'),
+      ]),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

@@ -6,6 +6,12 @@ export const prioritySchema = z.union([
   z.literal('medium'),
 ]);
 
+export const itemStatus = z.union([
+  z.literal('pending'),
+  z.literal('processing'),
+  z.literal('done'),
+]);
+
 export const createItemDto = z.object({
   listId: z.number().positive(),
   title: z.string().min(2).max(200),

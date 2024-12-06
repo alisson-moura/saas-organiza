@@ -25,6 +25,11 @@ import { CreateItemDto, createItemDto } from './dto/create-item.dto';
 import { CreateItemUseCase } from './use-cases/create-item';
 import { GetItems, getItemsDto, itemsDto } from './dto/get-items.dto';
 import { ListItemsUseCase } from './use-cases/list-items';
+import {
+  changeItemStatusDto,
+  ChangeItemStatusDto,
+} from './dto/change-item-status.dto';
+import { ChangeItemStatusUseCase } from './use-cases/change-item-status';
 
 @UseMiddlewares(AuthMiddleware)
 @Router({ alias: 'lists' })
@@ -33,6 +38,7 @@ export class ListsRouter {
     private readonly listsService: ListsService,
     private readonly createItemUseCase: CreateItemUseCase,
     private readonly listItemsUseCase: ListItemsUseCase,
+    private readonly changeItemStatusUseCase: ChangeItemStatusUseCase,
   ) {}
 
   @Mutation({
@@ -146,6 +152,26 @@ export class ListsRouter {
   })
   async getItems(@Ctx() ctx: Context, @Input() input: GetItems) {
     const result = await this.listItemsUseCase.execute(
+      parseInt(ctx.auth.id!),
+      input,
+    );
+    if (result.success) {
+      return result.data;
+    }
+    throw new TRPCError({
+      message: result.error,
+      code: 'BAD_REQUEST',
+    });
+  }
+
+  @Mutation({
+    input: changeItemStatusDto,
+  })
+  async changeItemStatus(
+    @Ctx() ctx: Context,
+    @Input() input: ChangeItemStatusDto,
+  ) {
+    const result = await this.changeItemStatusUseCase.execute(
       parseInt(ctx.auth.id!),
       input,
     );
