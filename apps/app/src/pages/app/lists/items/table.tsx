@@ -145,7 +145,7 @@ export function ItemsTable({ listId }: TableProps) {
             }}
             defaultValue={`${pagination.pageSize}`}
           >
-            <SelectTrigger className="w-[100px]">
+            <SelectTrigger  className="h-9 rounded-md px-3 w-[100px]">
               <SelectValue placeholder="Selecione a quantidade de itens por página" />
             </SelectTrigger>
             <SelectContent>

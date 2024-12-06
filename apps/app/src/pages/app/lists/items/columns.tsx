@@ -18,6 +18,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@app/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@app/components/ui/select";
+import { trpc } from "@app/lib/trpc";
 
 export type Item = {
   id: number;
@@ -26,10 +34,10 @@ export type Item = {
     id: number;
     name: string;
   } | null;
-  description?: string | null
+  description?: string | null;
   priority: "high" | "low" | "medium";
   status: "pending" | "processing" | "done";
-  listId: number
+  listId: number;
 };
 
 const priorityLabels = [
@@ -76,6 +84,22 @@ export const columns: ColumnDef<Item>[] = [
       return <div className="text-left">Status</div>;
     },
     cell: ({ row }) => {
+      const trpcUtils = trpc.useUtils();
+      const { mutate } = trpc.lists.changeItemStatus.useMutation();
+      const original = row.original;
+
+      const handleChangeStatus = async (
+        status: "pending" | "processing" | "done"
+      ) => {
+        mutate(
+          { itemId: original.id, status },
+          {
+            onSuccess: async () => {
+              await trpcUtils.lists.getItems.invalidate();
+            },
+          }
+        );
+      };
       const status = statusLabels.find(
         (status) => status.value === row.getValue("status")
       );
@@ -83,17 +107,21 @@ export const columns: ColumnDef<Item>[] = [
         return null;
       }
       return (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="flex flex-1"
-          onClick={() => console.log(row)}
-        >
-          {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
-        </Button>
+        <Select defaultValue="pending" onValueChange={handleChangeStatus}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Selecione o status do item" />
+          </SelectTrigger>
+          <SelectContent>
+            {statusLabels.map((label) => (
+              <SelectItem key={label.value} value={label.value}>
+                <div className="flex items-center">
+                  <label.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>{label.label}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       );
     },
   },
@@ -156,11 +184,11 @@ export const columns: ColumnDef<Item>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem>Detalhes</DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => console.log(item)}>
               Editar
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Detalhes</DropdownMenuItem>
             <DropdownMenuItem>Remover</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
