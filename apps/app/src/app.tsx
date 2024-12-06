@@ -7,7 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 
 export function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="organiza-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="organiza-theme">
       <Toaster />
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
