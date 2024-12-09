@@ -61,8 +61,8 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
    **Status:** 🟩 **Concluído**
 
 10. **Gerenciar Membros**  
-   **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  
-   **Status:** 🟩 **Concluído**
+    **Como um** Líder, **eu quero** alterar funções ou remover membros do grupo **para que** o grupo tenha a configuração ideal.  
+    **Status:** 🟩 **Concluído**
 
 ---
 
@@ -74,11 +74,11 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
 
 12. **Adicionar Itens à Lista**  
     **Como um** Líder ou Organizador, **eu quero** adicionar itens à lista **para que** os membros saibam as tarefas, itens ou atividades a serem realizadas.  
-    **Status:** 🟨 **Desenvolvendo**
+     **Status:** 🟩 **Concluído**
 
 13. **Marcar Itens como Concluídos**  
     **Como um** Participante ou superior, **eu quero** marcar itens da lista como concluídos **para que** o grupo saiba o que já foi feito.  
-    **Status:** 🟥 **Pendente**
+    **Status:** 🟩 **Concluído**
 
 14. **Finalizar Lista**  
     **Como um** Líder ou Organizador, **eu quero** finalizar uma lista **para que** ela seja arquivada quando todas as atividades estiverem concluídas.  
@@ -93,17 +93,18 @@ As funcionalidades estão descritas como histórias de usuários, detalhadas par
     **Status:** 🟥 **Pendente**
 
 16. **Health check**  
-    Criar um endpoint health para  monitorar a api do app
+    Criar um endpoint health para monitorar a api do app
     **Status:** 🟥 **Pendente**
+
 ---
 
 ## Permissões por Papel
 
-| Funcionalidade                     | Líder | Organizador | Participante | Observador |
-|------------------------------------|-------|-------------|--------------|------------|
-| Convidar membros                   | ✅    | ✅          | ❌           | ❌         |
-| Cancelar convite                   | ✅    | ❌          | ❌           | ❌         |
-| Criar listas                       | ✅    | ✅          | ❌           | ❌         |
-| Finalizar listas                   | ✅    | ✅          | ❌           | ❌         |
-| Dar check/uncheck em itens         | ✅    | ✅          | ✅           | ❌         |
-| Ver listas e itens                 | ✅    | ✅          | ✅           | ✅         |
+| Funcionalidade             | Líder | Organizador | Participante | Observador |
+| -------------------------- | ----- | ----------- | ------------ | ---------- |
+| Convidar membros           | ✅    | ✅          | ❌           | ❌         |
+| Cancelar convite           | ✅    | ❌          | ❌           | ❌         |
+| Criar listas               | ✅    | ✅          | ❌           | ❌         |
+| Finalizar listas           | ✅    | ✅          | ❌           | ❌         |
+| Dar check/uncheck em itens | ✅    | ✅          | ✅           | ❌         |
+| Ver listas e itens         | ✅    | ✅          | ✅           | ✅         |

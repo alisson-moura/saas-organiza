@@ -20,7 +20,7 @@ import { Button } from "@app/components/ui/button";
 import { Input } from "@app/components/ui/input";
 import { useMemo, useState } from "react";
 import { trpc } from "@app/lib/trpc";
-import { columns } from "./columns";
+import { Columns } from "./columns";
 import {
   Select,
   SelectContent,
@@ -54,7 +54,7 @@ export function ItemsTable({ listId }: TableProps) {
     { keepPreviousData: true }
   );
   const defaultData = useMemo(() => [], []);
-
+  const columns = Columns();
   const table = useReactTable({
     data: data.data?.items ?? defaultData,
     columns,
@@ -141,11 +141,11 @@ export function ItemsTable({ listId }: TableProps) {
         <div className="space-x-2 flex">
           <Select
             onValueChange={(e) => {
-              table.setPageSize(Number(e))
+              table.setPageSize(Number(e));
             }}
             defaultValue={`${pagination.pageSize}`}
           >
-            <SelectTrigger  className="h-9 rounded-md px-3 w-[100px]">
+            <SelectTrigger className="h-9 rounded-md px-3 w-[100px]">
               <SelectValue placeholder="Selecione a quantidade de itens por página" />
             </SelectTrigger>
             <SelectContent>
